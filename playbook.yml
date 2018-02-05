@@ -56,6 +56,11 @@
         - 'C:\Python27'
         - 'C:\PSTools'
 
+    - name: Install putty and plink
+      win_chocolatey:
+        name: putty
+        state: present        
+
     - name: Download AWSCLI
       win_shell: |
         $url = "https://s3.amazonaws.com/aws-cli/AWSCLI64.msi"
