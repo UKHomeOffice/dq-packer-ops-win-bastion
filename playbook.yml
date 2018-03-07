@@ -11,11 +11,17 @@
           - UpdateRollups
         state: installed
 
+    - name: Firewall rules
+      win_shell: |
+        Set-NetFirewallProfile -Profile Domain -Enabled False
+        Set-NetFirewallRule -Group "@FirewallAPI.dll,-28502" -Direction Inbound -Profile Domain -Enabled True
+
     - name: Install AD UAC, GPM
       win_shell: |
         Import-Module ServerManager
         Add-WindowsFeature RSAT-ADDS-Tools
         Add-WindowsFeature –Name GPMC
+        Add-WindowsFeature -Name Telnet-Client
 
     - name: Rename computer
       win_shell: |
@@ -29,6 +35,11 @@
     - name: Create PSTools directory
       win_file:
         path: C:\PSTools
+        state: directory
+
+    - name: Create scripts directory
+      win_file:
+        path: C:\scripts
         state: directory
 
     - name: Install Cholocatey
@@ -83,6 +94,57 @@
         path: C:\tmp\install\AWSCLI64.msi
         state: present
 
+    - name:  GET config files from S3
+      win_shell: |
+        aws configure set aws_access_key_id '{{user_access_key}}'
+        aws configure set aws_secret_access_key '{{secret_access_key}}'
+        aws s3 cp s3://dq-config-bucket/dq-ops-win/ C:\tmp\install\ --recursive
+      args:
+        executable: powershell.exe
+
+    - name: Delete AWS CLI config
+      win_shell: |
+        $folders = "'C:\Windows\System32\config\systemprofile\.aws\','C:\Users\Administrator\.aws\'"
+        Get-ChildItem $folders -r -filter credentials | Remove-Item
+      args:
+        executable: powershell.exe
+
+    - name: Install AWS Toolkit for Powershell
+      win_package:
+        path: http://sdk-for-net.amazonwebservices.com/latest/AWSToolsAndSDKForNet.msi
+        product_id: '{F3855CA6-073C-48B5-914A-AFD76AF2948B}'
+        arguments: '/q /norestart'
+        state: present
+
+    - name: Download PGAdmin3 1.18.1
+      win_shell: |
+        $url = "https://ftp.postgresql.org/pub/pgadmin/pgadmin3/v1.18.1/win32/pgadmin3-1.18.1.zip"
+        $output = "C:\tmp\install\pgadmin3-1.18.1.zip"
+        $wc = New-Object System.Net.WebClient
+        $wc.DownloadFile($url, $output)
+
+    - name: Unzip PGAdmin 1.18.1
+      win_unzip:
+        src: C:\tmp\install\pgadmin3-1.18.1.zip
+        dest: C:\tmp\install\pgadmin3-1.18.1
+        delete_archive: yes
+
+    - name: Install PGAdmin 1.18.1
+      win_package:
+        path: C:\tmp\install\pgadmin3-1.18.1\pgadmin3.msi
+        state: present
+
+    - name: Download Notepad++
+      win_shell: |
+        $url = "https://notepad-plus-plus.org/repository/7.x/7.5.5/npp.7.5.5.Installer.exe"
+        $output = "C:\tmp\install\npp.7.5.5.Installer.exe"
+        $wc = New-Object System.Net.WebClient
+        $wc.DownloadFile($url, $output)
+
+    - name: Install Notepad++
+      win_shell: |
+        C:\tmp\install\npp.7.5.5.Installer.exe /S
+
     - name: Download SQL Management studio
       win_shell: |
         $url = "https://go.microsoft.com/fwlink/?linkid=864329"
@@ -93,3 +155,29 @@
     - name: Install SQL Management studio
       win_shell: |
         C:\tmp\install\SSMS-Setup-ENU.exe /install /quiet /norestart
+
+    - name: Unzip Cloudwatch config file
+      win_unzip:
+        src: C:\tmp\install\AWS.EC2.Windows.Cloudwatch.json.zip
+        dest: C:\Program Files\Amazon\SSM\Plugins\awsCloudWatch
+        delete_archive: yes
+
+    - name: Save CW config by restarting the Service
+      win_shell: |
+        Restart-Service AmazonSSMAgent
+
+    - name: Copy stopped service monitoring PS script
+      win_copy:
+        src: ./scripts/monitor_stopped_win_services.ps1
+        dest: C:\scripts
+
+    - name: Setup service monitor scheduled task
+      win_shell: |
+        $action = New-ScheduledTaskAction -Execute "PowerShell.exe" -Argument "-ExecutionPolicy Bypass C:\scripts\monitor_win_services.ps1"
+        $trigger = New-ScheduledTaskTrigger -Daily -At (Get-Date)
+        $description = "Run Stopped service monitor every minute forever."
+        $principal = New-ScheduledTaskPrincipal -UserID "NT AUTHORITY\SYSTEM" -LogonType ServiceAccount -RunLevel Highest
+        $task = Register-ScheduledTask -TaskName "Stopped_Automatic_Services" -Trigger $trigger -Action $action -Description $description -Principal $principal
+        $task.Triggers.Repetition.Duration = "P1D"
+        $task.Triggers.Repetition.Interval = "PT1M"
+        $task | Set-ScheduledTask
