@@ -169,7 +169,7 @@
     - name: Copy stopped service monitoring PS script
       win_copy:
         src: ./scripts/monitor_stopped_win_services.ps1
-        dest: C:\scripts
+        dest: C:\scripts\
 
     - name: Setup service monitor scheduled task
       win_shell: |
