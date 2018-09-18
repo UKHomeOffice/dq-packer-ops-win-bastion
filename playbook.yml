@@ -57,6 +57,16 @@
         name: python3
         state: present
 
+    - name: Install VNC viewer
+      win_chocolatey:
+        name: vnc-viewer
+        state: present
+
+    - name: Install Win Management Framework with Powershell v5
+      win_chocolatey:
+        name: powershell
+        state: present
+
     - name: Download PsTools
       win_shell: |
         $url = "https://download.sysinternals.com/files/PSTools.zip"
@@ -95,17 +105,7 @@
         state: present
 
     - name:  GET config files from S3
-      win_shell: |
-        aws configure set aws_access_key_id '{{user_access_key}}'
-        aws configure set aws_secret_access_key '{{secret_access_key}}'
-        aws s3 cp s3://dq-config-bucket/dq-ops-win/ C:\tmp\install\ --recursive
-      args:
-        executable: powershell.exe
-
-    - name: Delete AWS CLI config
-      win_shell: |
-        $folders = "'C:\Windows\System32\config\systemprofile\.aws\','C:\Users\Administrator\.aws\'"
-        Get-ChildItem $folders -r -filter credentials | Remove-Item
+      win_shell: aws s3 cp s3://dq-config-bucket/dq-ops-win/ C:\tmp\install\ --recursive
       args:
         executable: powershell.exe
 
