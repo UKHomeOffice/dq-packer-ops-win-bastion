@@ -3,7 +3,7 @@
 - name: Build Windows server.
   hosts: all
   gather_facts: false
-  becom: yes
+  become: yes
   tasks:
     - name: install all critical and security updates
       win_updates:
