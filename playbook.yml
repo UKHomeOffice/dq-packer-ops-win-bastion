@@ -65,7 +65,7 @@
 
     - name: Install Win Management Framework with Powershell v5
       win_shell: |
-        Set-ExecutionPolicy unresricted
+        Set-ExecutionPolicy -ExecutionPolicy Unrestricted
         If ($PSVersionTable.PSVersion.Major -lt 5) {
             choco install powershell -y
         }
