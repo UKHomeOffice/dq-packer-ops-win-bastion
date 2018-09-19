@@ -64,9 +64,10 @@
         state: present
 
     - name: Install Win Management Framework with Powershell v5
-      win_chocolatey:
-        name: powershell
-        state: present
+      win_shell: |
+        If ($PSVersionTable.PSVersion.Major -lt 5) {
+            choco install powershell -y       
+        }
 
     - name: Download PsTools
       win_shell: |
