@@ -63,12 +63,10 @@
         name: vnc-viewer
         state: present
 
-    - name: Install Win Management Framework with Powershell v5
-      win_shell: |
-        Set-ExecutionPolicy -ExecutionPolicy Unrestricted
-        If ($PSVersionTable.PSVersion.Major -lt 5) {
-            choco install powershell -y
-        }
+    - name: Install Google Chrome
+      win_chocolatey:
+        name: googlechrome
+        state: present
 
     - name: Download PsTools
       win_shell: |
