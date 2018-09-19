@@ -8,8 +8,18 @@ This file contains a wrap up for Ansible script to be run inside a Windows 2012 
 
 ### `playbook.yml`
 Ansible playbook installing the following:
-- latest version of HTTPD service
-- script to pull HTTPD config from s3
+- PSTools
+- Chocolatey package manager
+- Python2.7
+- Python3
+- VNC viewer
+- Google Chrome
+- Putty
+- AWS CLI
+- AWS Toolkit for Powershell
+- PGAdmin 1.18.1
+- Notepad++
+- Microsoft SQL Management Studio
 
 ### `connection_plugins`
 - `packer.py` ssh based connections for powershell via packer
