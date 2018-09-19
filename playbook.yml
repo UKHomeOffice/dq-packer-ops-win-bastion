@@ -65,8 +65,9 @@
 
     - name: Install Win Management Framework with Powershell v5
       win_shell: |
+        Set-ExecutionPolicy unresricted
         If ($PSVersionTable.PSVersion.Major -lt 5) {
-            choco install powershell -y       
+            choco install powershell -y
         }
 
     - name: Download PsTools
