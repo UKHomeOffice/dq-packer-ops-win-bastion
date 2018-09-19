@@ -4,14 +4,6 @@
   hosts: all
   gather_facts: false
   tasks:
-    # - name: install all critical and security updates
-    #   win_updates:
-    #     category_names:
-    #       - CriticalUpdates
-    #       - SecurityUpdates
-    #       - UpdateRollups
-    #     state: installed
-
     - name: Firewall rules
       win_shell: |
         Set-NetFirewallProfile -Profile Domain -Enabled False
