@@ -24,7 +24,7 @@ pipeline:
       event: push
 
   packer-copy-notprod:
-    image: chrisns/packer-encrypt-copy
+    image: quay.io/ukhomeofficedigital/dq-packer-encrypt-copy
     commands:
       - export filters="--owner 093401982388 --filters "Name=name,Values=dq-ops-win*""
       - export aws_id=$${NOTPROD_ACC_ID}
@@ -40,7 +40,7 @@ pipeline:
       event: push
 
   packer-copy-prod:
-    image: chrisns/packer-encrypt-copy
+    image: quay.io/ukhomeofficedigital/dq-packer-encrypt-copy
     commands:
       - export filters="--owner 093401982388 --filters "Name=name,Values=dq-ops-win*""
       - export aws_id=$${PROD_ACC_ID}
