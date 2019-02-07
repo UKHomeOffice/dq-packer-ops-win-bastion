@@ -178,11 +178,21 @@
     - name: Add entries into Windows hosts file
       win_lineinfile:
         path: C:\Windows\System32\drivers\etc\hosts
-        line: '10.1.12.11 analysis.notprod.dq.homeoffice.gov.uk www.analysis.notprod.dq.homeoffice.gov.uk'
+        line: '10.1.12.111 analysis.notprod.dq.homeoffice.gov.uk www.analysis.notprod.dq.homeoffice.gov.uk'
         state: present
         insertafter: EOF
     - win_lineinfile:
         path: C:\Windows\System32\drivers\etc\hosts
-        line: '10.1.12.11 analysis.dq.homeoffice.gov.uk www.analysis.dq.homeoffice.gov.uk'
+        line: '10.1.12.111 analysis.dq.homeoffice.gov.uk www.analysis.dq.homeoffice.gov.uk'
+        state: present
+        insertafter: EOF
+    - win_lineinfile:
+        path: C:\Windows\System32\drivers\etc\hosts
+        line: '10.1.14.111 tableau-carrierportal.notprod.dq.homeoffice.gov.uk www.tableau-carrierportal.notprod.dq.homeoffice.gov.uk'
+        state: present
+        insertafter: EOF
+    - win_lineinfile:
+        path: C:\Windows\System32\drivers\etc\hosts
+        line: '10.1.14.111 tableau-carrierportal.dq.homeoffice.gov.uk www.tableau-carrierportal.dq.homeoffice.gov.uk'
         state: present
         insertafter: EOF
