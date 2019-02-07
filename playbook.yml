@@ -129,10 +129,10 @@
         path: C:\tmp\install\pgadmin3-1.18.1\pgadmin3.msi
         state: present
 
-    - name: Install Notepad++
+    - name: Install Atom
       win_chocolatey:
-        name: notepadplusplus
-        state: latest
+        name: atom --pre
+        state: present
 
     - name: Download SQL Management studio
       win_shell: |
