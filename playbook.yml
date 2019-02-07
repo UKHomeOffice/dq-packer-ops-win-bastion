@@ -174,3 +174,15 @@
         $task.Triggers.Repetition.Duration = "P1D"
         $task.Triggers.Repetition.Interval = "PT1M"
         $task | Set-ScheduledTask
+
+    - name: Add entries into Windows hosts file
+      win_lineinfile:
+        path: C:\Windows\System32\drivers\etc\hosts
+        line: '10.1.12.11 analysis.notprod.dq.homeoffice.gov.uk www.analysis.notprod.dq.homeoffice.gov.uk'
+        state: present
+        insertafter: EOF
+    - win_lineinfile:
+        path: C:\Windows\System32\drivers\etc\hosts
+        line: '10.1.12.11 analysis.dq.homeoffice.gov.uk www.analysis.dq.homeoffice.gov.uk'
+        state: present
+        insertafter: EOF
