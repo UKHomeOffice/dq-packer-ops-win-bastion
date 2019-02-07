@@ -16,10 +16,6 @@
         Add-WindowsFeature –Name GPMC
         Add-WindowsFeature -Name Telnet-Client
 
-    - name: Rename computer
-      win_shell: |
-        Rename-Computer -NewName BASTION-WIN1
-
     - name: Create tmp directory
       win_file:
         path: C:\tmp\install
