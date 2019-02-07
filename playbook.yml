@@ -131,7 +131,7 @@
 
     - name: Install Atom
       win_chocolatey:
-        name: atom --pre
+        name: atom
         state: present
 
     - name: Download SQL Management studio
