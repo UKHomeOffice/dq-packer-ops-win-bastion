@@ -151,6 +151,11 @@
         path: 'C:\Users\Administrator\AppData\Local\atom'
         state: absent
 
+    - name: Install GIT
+      win_chocolatey:
+        name: git
+        state: present
+
     - name: Download SQL Management studio
       win_shell: |
         $url = "https://go.microsoft.com/fwlink/?linkid=864329"
