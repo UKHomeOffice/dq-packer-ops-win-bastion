@@ -60,6 +60,10 @@
       win_chocolatey:
         name: powershell
         state: present
+        register: install_response
+        become: yes
+        become_user: SYSTEM
+        become_method: runas
 
     - name: Download PsTools
       win_shell: |
