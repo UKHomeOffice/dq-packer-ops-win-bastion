@@ -56,6 +56,11 @@
         name: googlechrome
         state: present
 
+    - name: Install Powershell5
+      win_chocolatey:
+        name: powershell
+        state: present
+
     - name: Download PsTools
       win_shell: |
         $url = "https://download.sysinternals.com/files/PSTools.zip"
@@ -103,6 +108,11 @@
       win_shell: C:\tmp\install\TableauDesktop-64bit-2018-GoldMaster.exe /quiet /norestart ACCEPTEULA=1
       args:
         executable: powershell.exe
+
+    - name: Unzip PSSlack Powershell module
+      win_unzip:
+        src: C:\tmp\install\PSSlack-master.zip
+        dest: C:\scripts\
 
     - name: Install AWS Toolkit for Powershell
       win_package:
