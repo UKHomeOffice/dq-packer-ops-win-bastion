@@ -161,6 +161,11 @@
         name: git
         state: present
 
+    - name: Install PGAdmin4
+      win_chocolatey:
+        name: pgadmin4
+        state: present
+
     - name: Download SQL Management studio
       win_shell: |
         $url = "https://go.microsoft.com/fwlink/?linkid=864329"
