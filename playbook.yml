@@ -166,6 +166,25 @@
         name: pgadmin4
         state: present
 
+    - name: Install Java 8 (required by SQL Workbench)
+      win_chocolatey:
+        name: jre8
+        state: installed
+
+    - name: Install SQL-Workbench
+      win_chocolatey:
+        name: sql-workbench
+        state: present
+
+    - name: Install Athena JDBC Driver
+      win_get_url:
+        url: https://s3.amazonaws.com/athena-downloads/drivers/JDBC/SimbaAthenaJDBC_2.0.7/AthenaJDBC42_2.0.7.jar
+        dest: C:\tmp\install\AthenaJDBC42_2.0.7.jar
+    - win_shell: java -jar C:\tmp\install\AthenaJDBC42_2.0.7.jar
+      args:
+        executable: powershell.exe
+
+
     - name: Download SQL Management studio
       win_shell: |
         $url = "https://go.microsoft.com/fwlink/?linkid=864329"
