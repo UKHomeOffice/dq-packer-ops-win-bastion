@@ -36,6 +36,11 @@
         iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
         choco feature enable -n allowGlobalConfirmation
 
+    - name: Install python2.7
+      win_chocolatey:
+        name: python2
+        state: present
+
     - name: Install python3
       win_chocolatey:
         name: python3
