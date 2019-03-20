@@ -171,7 +171,7 @@
     - name: Install Java 8 (required by SQL Workbench)
       win_chocolatey:
         name: jre8
-        state: installed
+        state: present
 
     - name: Install SQL-Workbench
       win_chocolatey:
