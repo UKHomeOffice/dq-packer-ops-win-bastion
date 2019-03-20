@@ -174,7 +174,7 @@
         state: present
     - win_file:
         path: C:\Users\Public\Desktop\SQLWorkbench
-        state: present
+        state: directory
     - win_shortcut:
         src: 'C:\ProgramData\chocolatey\bin\SQLWorkbench.exe'
         dest: 'C:\Users\Public\Desktop\SQLWorkbench\SQLWorkbench.exe'
