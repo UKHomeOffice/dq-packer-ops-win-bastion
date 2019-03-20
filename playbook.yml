@@ -177,7 +177,7 @@
         state: directory
     - win_shortcut:
         src: 'C:\ProgramData\chocolatey\bin\SQLWorkbench.exe'
-        dest: 'C:\Users\Public\Desktop\SQLWorkbench\SQLWorkbench.exe'
+        dest: 'C:\Users\Public\Desktop\SQLWorkbench\SQLWorkbench.lnk'
         icon: 'C:\ProgramData\chocolatey\bin\SQLWorkbench.exe'
 
     - name: Download Athena JDBC Driver
