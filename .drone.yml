@@ -38,6 +38,7 @@ pipeline:
       - NOTPROD_ACC_KEY
     when:
       event: push
+      branch: master
 
   packer-copy-prod:
     image: quay.io/ukhomeofficedigital/dq-packer-encrypt-copy
