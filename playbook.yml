@@ -52,6 +52,10 @@
         name: python3
         state: present
 
+    - name: Install python packages
+      pip:
+        name: boto3
+
     - name: Install VNC viewer
       win_chocolatey:
         name: vnc-viewer
@@ -180,7 +184,7 @@
         path: C:\Users\Public\Desktop\SQLWorkbench
         state: directory
     - win_shortcut:
-        src: 'C:\ProgramData\chocolatey\bin\SQLWorkbench.exe'
+        src: 'C:\ProgramData\chocolatey\bin\SQLWorkbench.exe -configDir=c:/Users/Public/.sqlworkbench'
         dest: 'C:\Users\Public\Desktop\SQLWorkbench\SQLWorkbench.lnk'
         icon: 'C:\ProgramData\chocolatey\bin\SQLWorkbench.exe'
 
@@ -220,6 +224,11 @@
         src: ./scripts/monitor_stopped_win_services.ps1
         dest: C:\scripts\
 
+    - name: Copy sqlworkbench config script
+      win_copy:
+        src: ./scripts/pull-workbench-conf.py
+        dest: C:\scripts\
+
     - name: Setup service monitor scheduled task
       win_shell: |
         $action = New-ScheduledTaskAction -Execute "PowerShell.exe" -Argument "-ExecutionPolicy Bypass C:\scripts\monitor_win_services.ps1"
@@ -229,6 +238,17 @@
         $task = Register-ScheduledTask -TaskName "Stopped_Automatic_Services" -Trigger $trigger -Action $action -Description $description -Principal $principal
         $task.Triggers.Repetition.Duration = "P1D"
         $task.Triggers.Repetition.Interval = "PT1M"
+        $task | Set-ScheduledTask
+
+    - name: Setup sqlworkbench scheduled task
+      win_shell: |
+        $action = New-ScheduledTaskAction -Execute "C:\Python37\python.exe" -Argument "C:\scripts\pull-workbench-conf.py"
+        $trigger = New-ScheduledTaskTrigger -Daily -At (Get-Date)
+        $description = "Run sqlworkbench config puller task every 30min"
+        $principal = New-ScheduledTaskPrincipal -UserID "NT AUTHORITY\SYSTEM" -LogonType ServiceAccount -RunLevel Highest
+        $task = Register-ScheduledTask -TaskName "Sqlworkbench_Config_Puller" -Trigger $trigger -Action $action -Description $description -Principal $principal
+        $task.Triggers.Repetition.Duration = "P1D"
+        $task.Triggers.Repetition.Interval = "PT30M"
         $task | Set-ScheduledTask
 
     - name: Add entries into Windows hosts file
