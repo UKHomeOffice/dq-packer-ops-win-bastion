@@ -53,8 +53,8 @@
         state: present
 
     - name: Install python packages
-      pip:
-        name: boto3
+      win_shell: |
+        name: pip install boto3
 
     - name: Install VNC viewer
       win_chocolatey:
