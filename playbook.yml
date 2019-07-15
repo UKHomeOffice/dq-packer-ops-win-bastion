@@ -184,8 +184,9 @@
         path: C:\Users\Public\Desktop\SQLWorkbench
         state: directory
     - win_shortcut:
-        src: 'C:\ProgramData\chocolatey\bin\SQLWorkbench.exe -configDir=c:/Users/Public/.sqlworkbench'
+        src: 'C:\ProgramData\chocolatey\bin\SQLWorkbench.exe'
         dest: 'C:\Users\Public\Desktop\SQLWorkbench\SQLWorkbench.lnk'
+        arguments: '-configDir=C:/Users/Public/.sqlworkbench'
         icon: 'C:\ProgramData\chocolatey\bin\SQLWorkbench.exe'
 
     - name: Download Athena JDBC Driver
