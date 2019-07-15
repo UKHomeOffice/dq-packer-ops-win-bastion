@@ -54,7 +54,7 @@
 
     - name: Install python packages
       win_shell: |
-        name: pip install boto3
+        pip install boto3
 
     - name: Install VNC viewer
       win_chocolatey:
