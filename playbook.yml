@@ -273,3 +273,8 @@
         line: '10.1.14.111 tableau-carrierportal.dq.homeoffice.gov.uk www.tableau-carrierportal.dq.homeoffice.gov.uk'
         state: present
         insertafter: EOF
+    - win_lineinfile:
+        path: C:\Windows\System32\drivers\etc\hosts
+        line: '10.1.12.115 analysis-staging.dq.homeoffice.gov.uk www.analysis-staging.dq.homeoffice.gov.uk'
+        state: present
+        insertafter: EOF
