@@ -35,12 +35,10 @@
         path: C:\scripts
         state: directory
 
-    - name: Download PGAdmin3 1.18.1
-      win_shell: |
-        $url = "https://ftp.postgresql.org/pub/pgadmin/pgadmin3/v1.18.1/win32/pgadmin3-1.18.1.zip"
-        $output = "C:\tmp\install\pgadmin3-1.18.1.zip"
-        $wc = New-Object System.Net.WebClient
-        $wc.DownloadFile($url, $output)
+    - name:
+      win_get_url:
+        url: https://ftp.postgresql.org/pub/pgadmin/pgadmin3/v1.18.1/win32/pgadmin3-1.18.1.zip
+        dest: C:\tmp\install\pgadmin3-1.18.1.zip
 
     - name: Unzip PGAdmin 1.18.1
       win_unzip:
