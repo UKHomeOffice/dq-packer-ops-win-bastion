@@ -35,6 +35,24 @@
         path: C:\scripts
         state: directory
 
+    - name: Download PGAdmin3 1.18.1
+      win_shell: |
+        $url = "https://ftp.postgresql.org/pub/pgadmin/pgadmin3/v1.18.1/win32/pgadmin3-1.18.1.zip"
+        $output = "C:\tmp\install\pgadmin3-1.18.1.zip"
+        $wc = New-Object System.Net.WebClient
+        $wc.DownloadFile($url, $output)
+
+    - name: Unzip PGAdmin 1.18.1
+      win_unzip:
+        src: C:\tmp\install\pgadmin3-1.18.1.zip
+        dest: C:\tmp\install\pgadmin3-1.18.1
+        delete_archive: yes
+
+    - name: Install PGAdmin 1.18.1
+      win_package:
+        path: C:\tmp\install\pgadmin3-1.18.1\pgadmin3.msi
+        state: present
+
     - name: Install Cholocatey
       win_shell: |
         Set-ExecutionPolicy Bypass -Scope Process -Force
@@ -47,10 +65,11 @@
         name: python2
         state: present
 
-    # - name: Install python3
-    #   win_chocolatey:
-    #     name: python3
-    #     state: present
+    - name: Install python3
+      win_chocolatey:
+        name: python3
+        version: 3.7.5
+        state: present
 
     - name: Install python packages
       win_shell: |
@@ -79,10 +98,10 @@
         dest: C:\PSTools\
         delete_archive: yes
 
-    - name: Ensure that Python2.7 / Python3.6 and PsTools are present on the global system path
+    - name: Ensure that Python2.7 / Python3.7 and PsTools are present on the global system path
       win_path:
         elements:
-        - 'C:\Python36'
+        - 'C:\Python37'
         - 'C:\Python27'
         - 'C:\PSTools'
 
@@ -107,7 +126,9 @@
       win_shell: aws s3 cp s3://dq-config-bucket/dq-ops-win/ C:\tmp\install\ --recursive
       args:
         executable: powershell.exe
-    - win_shell: aws s3 cp s3://dq-config-bucket/dq-tableau/gold-master/TableauDesktop-64bit-2018-GoldMaster.exe C:\tmp\install\
+
+    - name: GET Tableau Desktop install file
+      win_shell: aws s3 cp s3://dq-config-bucket/dq-tableau/gold-master/TableauDesktop-64bit-2018-GoldMaster.exe C:\tmp\install\
 
     - name: Install Tableau Desktop
       win_shell: C:\tmp\install\TableauDesktop-64bit-2018-GoldMaster.exe /quiet /norestart ACCEPTEULA=1
@@ -124,24 +145,6 @@
         path: http://sdk-for-net.amazonwebservices.com/latest/AWSToolsAndSDKForNet.msi
         product_id: '{F3855CA6-073C-48B5-914A-AFD76AF2948B}'
         arguments: '/q /norestart'
-        state: present
-
-    - name: Download PGAdmin3 1.18.1
-      win_shell: |
-        $url = "https://ftp.postgresql.org/pub/pgadmin/pgadmin3/v1.18.1/win32/pgadmin3-1.18.1.zip"
-        $output = "C:\tmp\install\pgadmin3-1.18.1.zip"
-        $wc = New-Object System.Net.WebClient
-        $wc.DownloadFile($url, $output)
-
-    - name: Unzip PGAdmin 1.18.1
-      win_unzip:
-        src: C:\tmp\install\pgadmin3-1.18.1.zip
-        dest: C:\tmp\install\pgadmin3-1.18.1
-        delete_archive: yes
-
-    - name: Install PGAdmin 1.18.1
-      win_package:
-        path: C:\tmp\install\pgadmin3-1.18.1\pgadmin3.msi
         state: present
 
     - name: Atom - Install
