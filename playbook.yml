@@ -182,14 +182,14 @@
       win_chocolatey:
         name: sql-workbench
         state: present
-    - win_file:
-        path: C:\Users\Public\Desktop\SQLWorkbench
-        state: directory
-    - win_shortcut:
-        src: 'C:\ProgramData\chocolatey\bin\SQLWorkbench.exe'
-        dest: 'C:\Users\Public\Desktop\SQLWorkbench\SQLWorkbench.lnk'
-        args: -configDir=C:\Users\Public\.sqlworkbench
-        icon: 'C:\ProgramData\chocolatey\bin\SQLWorkbench.exe'
+    # - win_file:
+    #     path: C:\Users\Public\Desktop\SQLWorkbench
+    #     state: directory
+    # - win_shortcut:
+    #     src: 'C:\ProgramData\chocolatey\bin\SQLWorkbench.exe'
+    #     dest: 'C:\Users\Public\Desktop\SQLWorkbench\SQLWorkbench.lnk'
+    #     args: -configDir=C:\Users\Public\.sqlworkbench
+    #     icon: 'C:\ProgramData\chocolatey\bin\SQLWorkbench.exe'
 
     # - name: Download Athena JDBC Driver
     #   win_get_url:
