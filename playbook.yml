@@ -180,7 +180,7 @@
 
     - name: Install SQL-Workbench
       win_chocolatey:
-        name: sql-workbench
+        name: mysql-workbench
         state: present
     # - win_file:
     #     path: C:\Users\Public\Desktop\SQLWorkbench
