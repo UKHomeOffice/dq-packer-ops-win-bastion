@@ -191,15 +191,15 @@
     #     args: -configDir=C:\Users\Public\.sqlworkbench
     #     icon: 'C:\ProgramData\chocolatey\bin\SQLWorkbench.exe'
 
-    - name: Download Athena JDBC Driver
-      win_get_url:
-        url: https://s3.amazonaws.com/athena-downloads/drivers/JDBC/SimbaAthenaJDBC_2.0.7/AthenaJDBC42_2.0.7.jar
-        dest: C:\Users\Public\Desktop\SQLWorkbench\AthenaJDBC42_2.0.7.jar
-
-    - name: Download PostgreSQL JDBC Driver
-      win_get_url:
-        url: https://jdbc.postgresql.org/download/postgresql-42.2.5.jar
-        dest: C:\Users\Public\Desktop\SQLWorkbench\postgresql-42.2.5.jar
+    # - name: Download Athena JDBC Driver
+    #   win_get_url:
+    #     url: https://s3.amazonaws.com/athena-downloads/drivers/JDBC/SimbaAthenaJDBC_2.0.7/AthenaJDBC42_2.0.7.jar
+    #     dest: C:\Users\Public\Desktop\SQLWorkbench\AthenaJDBC42_2.0.7.jar
+    #
+    # - name: Download PostgreSQL JDBC Driver
+    #   win_get_url:
+    #     url: https://jdbc.postgresql.org/download/postgresql-42.2.5.jar
+    #     dest: C:\Users\Public\Desktop\SQLWorkbench\postgresql-42.2.5.jar
 
     - name: Download SQL Management studio
       win_shell: |
