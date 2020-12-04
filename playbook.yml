@@ -145,6 +145,9 @@
         product_id: '{F3855CA6-073C-48B5-914A-AFD76AF2948B}'
         arguments: '/q /norestart'
         state: present
+        
+    - name: Install mysql.workbench through Powershell
+      ansible.windows.win_shell: choco install mysql.workbench
 
     # - name: Atom - Install
     #   win_chocolatey:
@@ -177,8 +180,6 @@
     #   win_chocolatey:
     #     name: pgadmin4
     #     state: present
-    - name: Install mysql.workbench through Powershell
-      ansible.windows.win_shell: choco install mysql.workbench
 
     # - name: Install SQL-Workbench
     #   win_chocolatey:
