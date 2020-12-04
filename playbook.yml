@@ -177,19 +177,21 @@
     #   win_chocolatey:
     #     name: pgadmin4
     #     state: present
+    - name: Install mysql.workbench through Powershell
+      ansible.windows.win_shell: choco install mysql.workbench
 
-    - name: Install SQL-Workbench
-      win_chocolatey:
-        name: mysql-workbench
-        state: present
-    # - win_file:
-    #     path: C:\Users\Public\Desktop\SQLWorkbench
-    #     state: directory
-    # - win_shortcut:
-    #     src: 'C:\ProgramData\chocolatey\bin\SQLWorkbench.exe'
-    #     dest: 'C:\Users\Public\Desktop\SQLWorkbench\SQLWorkbench.lnk'
-    #     args: -configDir=C:\Users\Public\.sqlworkbench
-    #     icon: 'C:\ProgramData\chocolatey\bin\SQLWorkbench.exe'
+    # - name: Install SQL-Workbench
+    #   win_chocolatey:
+    #     name: sql-workbench
+    #     state: present
+    - win_file:
+        path: C:\Users\Public\Desktop\SQLWorkbench
+        state: directory
+    - win_shortcut:
+        src: 'C:\ProgramData\chocolatey\bin\SQLWorkbench.exe'
+        dest: 'C:\Users\Public\Desktop\SQLWorkbench\SQLWorkbench.lnk'
+        args: -configDir=C:\Users\Public\.sqlworkbench
+        icon: 'C:\ProgramData\chocolatey\bin\SQLWorkbench.exe'
 
     # - name: Download Athena JDBC Driver
     #   win_get_url:
