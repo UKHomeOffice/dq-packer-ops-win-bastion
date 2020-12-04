@@ -148,6 +148,8 @@
 
     - name: Install mysql.workbench through Powershell
       shell: choco install mysql.workbench
+      args:
+        chdir: C:\Windows\System32
 
     # - name: Atom - Install
     #   win_chocolatey:
