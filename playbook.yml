@@ -182,7 +182,7 @@
       win_chocolatey:
         name: sql-workbench
         state: present
-        args: --checksum DA017F92BB344B846027D52223BE6D88FFD283368495A0B26B6E1334A42AC955
+        ignore_checksums: yes
     - win_file:
         path: C:\Users\Public\Desktop\SQLWorkbench
         state: directory
