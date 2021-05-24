@@ -234,6 +234,12 @@
         src: ./scripts/pull-workbench-conf.py
         dest: C:\scripts\
 
+    - name: Copy windows-update script
+      win_copy:
+        src: ./scripts/win-updates.ps1
+        dest: C:\scripts\
+
+
     - name: Setup service monitor scheduled task
       win_shell: |
         $action = New-ScheduledTaskAction -Execute "PowerShell.exe" -Argument "-ExecutionPolicy Bypass C:\scripts\monitor_win_services.ps1"
