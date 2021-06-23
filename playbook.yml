@@ -166,7 +166,7 @@
     - name: PGAdmin4 - Create shortcut for all users (Public Desktop)
       win_shortcut:
         src: 'C:\Users\Administrator\AppData\Local\Programs\pgAdmin 4\v5\runtime\pgAdmin4.exe'
-        dest: 'C:\Users\Public\Desktop\'
+        dest: 'C:\Users\Public\Desktop\pgAdmin4.lnk'
         icon: 'C:\Users\Administrator\AppData\Local\Programs\pgAdmin 4\v5\runtime\pgAdmin4.exe'
 
     - name: Install SQL-Workbench
