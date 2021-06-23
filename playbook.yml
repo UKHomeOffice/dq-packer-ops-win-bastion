@@ -163,22 +163,11 @@
         name: pgadmin4
         state: present
 
-    - name: PGAdmin4 - Move install to Program Files
-      win_copy:
-        src: 'C:\Users\Administrator\AppData\Local\Temp\chocolatey\pgadmin4\5.4\pgadmin4-5.4-x64.exe'
-        dest: 'C:\Program Files'
-        remote_src: True
-
     - name: PGAdmin4 - Create shortcut for all users (Public Desktop)
       win_shortcut:
-        src: 'C:\Program Files\pgadmin4\pgadmin4-5.4-x64.exe'
-        dest: 'C:\Users\Public\Desktop\PGAdmin4.lnk'
-        icon: 'C:\Program Files (x86)\pgadmin4\pgadmin4-5.4-x64.exe'
-
-    - name: PGAdmin4 - Remove OLD installation directory (cleanup)
-      win_file:
-        path: 'C:\Users\Administrator\AppData\Local\Temp\chocolatey\pgadmin4'
-        state: absent
+        src: 'C:\Users\Administrator\AppData\Local\Programs\pgAdmin 4\v5\runtime\pgAdmin4.exe'
+        dest: 'C:\Users\Public\Desktop\'
+        icon: 'C:\Users\Administrator\AppData\Local\Programs\pgAdmin 4\v5\runtime\pgAdmin4.exe'
 
     - name: Install SQL-Workbench
       win_chocolatey:
