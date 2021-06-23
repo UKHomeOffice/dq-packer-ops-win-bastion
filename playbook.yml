@@ -166,12 +166,12 @@
     - name: PGAdmin4 - Move install to Program Files
       win_copy:
         src: 'C:\Users\Administrator\AppData\Local\Temp\chocolatey\pgadmin4\5.4\pgadmin4-5.4-x64.exe'
-        dest: 'C:\Program Files (x86)'
+        dest: 'C:\Program Files'
         remote_src: True
 
     - name: PGAdmin4 - Create shortcut for all users (Public Desktop)
       win_shortcut:
-        src: 'C:\Program Files (x86)\pgadmin4\pgadmin4-5.4-x64.exe'
+        src: 'C:\Program Files\pgadmin4\pgadmin4-5.4-x64.exe'
         dest: 'C:\Users\Public\Desktop\PGAdmin4.lnk'
         icon: 'C:\Program Files (x86)\pgadmin4\pgadmin4-5.4-x64.exe'
 
