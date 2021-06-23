@@ -35,22 +35,6 @@
         path: C:\scripts
         state: directory
 
-    - name:
-      win_get_url:
-        url: https://ftp.postgresql.org/pub/pgadmin/pgadmin3/v1.22.2/win32/pgadmin3-1.22.2.zip
-        dest: C:\tmp\install\pgadmin3-1.22.2.zip
-
-    - name: Unzip PGAdmin 1.22.2
-      win_unzip:
-        src: C:\tmp\install\pgadmin3-1.22.2.zip
-        dest: C:\tmp\install\pgadmin3-1.22.2
-        delete_archive: yes
-
-    - name: Install PGAdmin 1.22.2
-      win_package:
-        path: C:\tmp\install\pgadmin3-1.22.2\pgadmin3.msi
-        state: present
-
     - name: Install Cholocatey
       win_shell: |
         Set-ExecutionPolicy Bypass -Scope Process -Force
@@ -178,6 +162,23 @@
       win_chocolatey:
         name: pgadmin4
         state: present
+
+    - name: PGAdmin4 - Move install to Program Files
+      win_copy:
+        src: 'C:\Users\Administrator\AppData\Local\pgadmin4'
+        dest: 'C:\Program Files (x86)'
+        remote_src: True
+
+    - name: PGAdmin4 - Create shortcut for all users (Public Desktop)
+      win_shortcut:
+        src: 'C:\Program Files (x86)\pgadmin4\pgadmin4.exe'
+        dest: 'C:\Users\Public\Desktop\PGAdmin4.lnk'
+        icon: 'C:\Program Files (x86)\pgadmin4\pgadmin4.exe'
+
+    - name: PGAdmin4 - Remove OLD installation directory (cleanup)
+      win_file:
+        path: 'C:\Users\Administrator\AppData\Local\pgadmin4'
+        state: absent
 
     - name: Install SQL-Workbench
       win_chocolatey:
