@@ -163,11 +163,17 @@
         name: pgadmin4
         state: present
 
-    - name: PGAdmin4 - Create shortcut for all users (Public Desktop)
+    - name: Copy pgadmin4 Folder to Program Files
+      ansible.windows.win_copy:
+        src: 'C:\Users\Administrator\AppData\Local\Programs\pgAdmin 4'
+        dest: 'C:\Program Files'
+
+
+    - name: PGAdmin4 - Create shortcut for pagadmin4
       win_shortcut:
-        src: 'C:\Users\Administrator\AppData\Local\Programs\pgAdmin 4\v5\runtime\pgAdmin4.exe'
+        src: 'C:\Program Files\pgAdmin 4\v5\runtime\pgAdmin4.exe'
         dest: 'C:\Users\Public\Desktop\pgAdmin4.lnk'
-        icon: 'C:\Users\Administrator\AppData\Local\Programs\pgAdmin 4\v5\runtime\pgAdmin4.exe'
+        icon: 'C:\Program Files\pgAdmin 4\v5\runtime\pgAdmin4.exe'
 
     - name: Install SQL-Workbench
       win_chocolatey:
