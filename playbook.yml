@@ -164,10 +164,9 @@
         state: present
 
     - name: Copy pgadmin4 Folder to Program Files
-      ansible.windows.win_copy:
+      win_copy:
         src: 'C:\Users\Administrator\AppData\Local\Programs\pgAdmin 4'
         dest: 'C:\Program Files'
-
 
     - name: PGAdmin4 - Create shortcut for pagadmin4
       win_shortcut:
