@@ -111,14 +111,6 @@
       args:
         executable: powershell.exe
 
-    - name: GET Tableau Desktop install file
-      win_shell: aws s3 cp s3://dq-config-bucket/dq-tableau/gold-master/TableauDesktop-64bit-2020-GoldMaster.exe C:\tmp\install\
-
-    - name: Install Tableau Desktop
-      win_shell: C:\tmp\install\TableauDesktop-64bit-2020-GoldMaster.exe /quiet /norestart ACCEPTEULA=1
-      args:
-        executable: powershell.exe
-
     - name: Unzip PSSlack Powershell module
       win_unzip:
         src: C:\tmp\install\PSSlack-master.zip
@@ -134,7 +126,7 @@
     - name: Install PGAdmin4
       win_chocolatey:
         name: pgadmin4
-        state: present    
+        state: present
 
     - name: Atom - Install
       win_chocolatey:
@@ -223,6 +215,10 @@
         src: ./scripts/win-updates.ps1
         dest: C:\scripts\
 
+    - name: Copy RDP Shortcut files
+      win_copy:
+        src: ./misc
+        dest: C:\
 
     - name: Setup service monitor scheduled task
       win_shell: |
