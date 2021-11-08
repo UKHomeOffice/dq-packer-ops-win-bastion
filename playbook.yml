@@ -123,11 +123,6 @@
         arguments: '/q /norestart'
         state: present
 
-    - name: Install PGAdmin4
-      win_chocolatey:
-        name: pgadmin4
-        state: present
-
     - name: Atom - Install
       win_chocolatey:
         name: atom
@@ -213,6 +208,11 @@
     - name: Copy windows-update script
       win_copy:
         src: ./scripts/win-updates.ps1
+        dest: C:\scripts\
+
+    - name: Copy useradta script
+      win_copy:
+        src: ./scripts/userdata.ps1
         dest: C:\scripts\
 
     - name: Copy RDP Shortcut files
