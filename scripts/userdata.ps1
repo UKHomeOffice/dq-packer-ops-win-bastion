@@ -71,7 +71,8 @@ Install-WindowsFeature -Name RDS-connection-broker -IncludeAllSubFeature -verbos
 
 Write-Host 'Installing pgAdmin4 and Creating Shortcut to Desktop'
 choco install pgadmin4 -y
-$SourceFileLocation = 'C:\Users\Administrator\AppData\Local\Programs\pgAdmin 4\v6\runtime\pgAdmin4.exe'
+Move-Item 'C:\Users\Administrator\AppData\Local\Programs\pgAdmin 4' 'C:\Program Files'
+$SourceFileLocation = 'C:\Program Files\pgAdmin 4\v6\runtime\pgAdmin4.exe'
 $ShortcutLocation = 'C:\Users\Public\Desktop\pgAdmin4.lnk'
 $WScriptShell = New-Object -ComObject WScript.Shell
 $Shortcut = $WScriptShell.CreateShortcut($ShortcutLocation)
