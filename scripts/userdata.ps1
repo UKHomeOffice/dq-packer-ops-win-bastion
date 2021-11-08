@@ -1,3 +1,5 @@
+Start-Transcript -path C:\PerfLogs\userdata_output.log -append
+
 Write-Host 'Getting IP address of host!'
 $myip = Get-Netipaddress -addressfamily ipv4
 
@@ -85,3 +87,5 @@ Rename-Computer -NewName "$bastion" -Restart
 #$username = "$domain\domain_joiner"
 #$credential = New-Object System.Management.Automation.PSCredential($username,$password)
 #Add-Computer -DomainName $domain -ComputerName $env:computername -NewName "$bastion" -options JoinWithNewName -Credential $credential -restart -force
+
+Stop-Transcript
