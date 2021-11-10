@@ -69,8 +69,7 @@ Install-WindowsFeature -Name RDS-licensing -Verbose
 Install-WindowsFeature -Name RDS-connection-broker -IncludeAllSubFeature -verbose
 
 
-Write-Host 'Installing pgAdmin4 and Creating Shortcut to Desktop'
-choco install pgadmin4 --version 6.1 -y
+Write-Host 'Creating pgadmin4 Shortcut to Desktop'
 Move-Item 'C:\Users\Administrator\AppData\Local\Programs\pgAdmin 4' 'C:\Program Files'
 $SourceFileLocation = 'C:\Program Files\pgAdmin 4\v6\runtime\pgAdmin4.exe'
 $ShortcutLocation = 'C:\Users\Public\Desktop\pgAdmin4.lnk'

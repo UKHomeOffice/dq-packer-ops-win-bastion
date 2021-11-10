@@ -68,6 +68,12 @@
         name: googlechrome
         state: present
 
+    - name: Install pgadmin4
+      win_chocolatey:
+        name: pgadmin4
+        version: 6.1
+        state: present
+
     - name: Download PsTools
       win_shell: |
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
