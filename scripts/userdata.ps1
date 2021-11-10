@@ -70,7 +70,7 @@ Install-WindowsFeature -Name RDS-connection-broker -IncludeAllSubFeature -verbos
 
 
 Write-Host 'Installing pgAdmin4 and Creating Shortcut to Desktop'
-choco install pgadmin4 -y
+choco install pgadmin4 --version 6.1 -y
 Move-Item 'C:\Users\Administrator\AppData\Local\Programs\pgAdmin 4' 'C:\Program Files'
 $SourceFileLocation = 'C:\Program Files\pgAdmin 4\v6\runtime\pgAdmin4.exe'
 $ShortcutLocation = 'C:\Users\Public\Desktop\pgAdmin4.lnk'
@@ -78,15 +78,17 @@ $WScriptShell = New-Object -ComObject WScript.Shell
 $Shortcut = $WScriptShell.CreateShortcut($ShortcutLocation)
 $Shortcut.TargetPath = $SourceFileLocation
 $Shortcut.Save()
+Write-Host 'pgAdmin4 Shortcut created! Click on pgAdmin 4 Folder to initialize shortcut!'
 
-Write-Host 'Renaming Server'
-Rename-Computer -NewName "$bastion" -Restart
+Write-Host 'Join System to the DQ domain'
+$joiner_pw = (Get-SSMParameter -Name "AD_AdminPasswordd" -WithDecryption $True).Value
+$domain = 'dq.homeoffice.gov.uk'
+$username = 'dq\domain_joiner'
+$password = ConvertTo-SecureString $joiner_pw -AsPlainText -Force
+$credential = New-Object System.Management.Automation.PSCredential($username,$password)
 
-
-#Write-Host 'Join the box to the dq domain'
-#$domain = "dq.homeoffice.gov.uk"
-#$username = "$domain\domain_joiner"
-#$credential = New-Object System.Management.Automation.PSCredential($username,$password)
-#Add-Computer -DomainName $domain -ComputerName $env:computername -NewName "$bastion" -options JoinWithNewName -Credential $credential -restart -force
+Rename-Computer -NewName $bastion
+sleep 20
+Add-Computer -DomainName $domain -Options JoinWithNewName,AccountCreate -Credential $credential -restart -force
 
 Stop-Transcript
