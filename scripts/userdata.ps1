@@ -60,7 +60,7 @@ Write-Host 'Adding bucket variable'
 [System.Environment]::SetEnvironmentVariable('S3_OPS_CONFIG_BUCKET','s3-dq-ops-config-$environment/sqlworkbench')
 
 Write-Host 'Adding Tableau Development RDP Shortcuts to Desktop'
-Copy-Item -Filter *$environment* -Path 'C:\misc\*' -Destination 'C:\Users\Public\Desktop'
+Copy-Item -Path C:\misc\* -Filter *-$environment* -Destination C:\Users\Public\Desktop -Recurse
 
 Write-Host 'Installing the Windows RDS services'
 Install-WindowsFeature -name windows-internal-database -Verbose
