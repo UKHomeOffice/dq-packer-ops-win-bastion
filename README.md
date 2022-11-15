@@ -12,7 +12,6 @@ Ansible playbook installing the following:
 - Chocolatey package manager
 - Python2.7
 - Python3
-- VNC viewer
 - Google Chrome
 - Putty
 - AWS CLI

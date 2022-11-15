@@ -58,11 +58,6 @@
       win_shell: |
         pip install boto3
 
-    - name: Install VNC viewer
-      win_chocolatey:
-        name: vnc-viewer
-        state: present
-
     - name: Install Google Chrome
       win_chocolatey:
         name: googlechrome
