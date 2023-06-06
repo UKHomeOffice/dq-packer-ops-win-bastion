@@ -109,7 +109,7 @@ steps:
   image: *copy-image
   commands:
   - source ./set_aws_secrets_np.sh
-  - export filters="--owner 093401982388 --filters "Name=name,Values=dq-ops-win-nineteen-bastion-*""
+  - export filters="--owner 093401982388 --filters "Name=name,Values=dq-ops-win-bastion-*""
   - export os="win2019"
   - export HOME=/home/packer
   - cd /home/packer
