@@ -195,6 +195,11 @@
         src: ./scripts/userdata.ps1
         dest: C:\scripts\
 
+    - name: Copy region & locale helper script
+      win_copy:
+        src: ./scripts/born-in-the-UK.ps1
+        dest: C:\scripts\
+
     - name: Copy RDP Shortcut files
       win_copy:
         src: ./misc
