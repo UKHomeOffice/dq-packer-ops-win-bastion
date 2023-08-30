@@ -1,12 +1,4 @@
 {
-  "required_plugins": {
-          "amazon": [
-            {
-              "source": "github.com/hashicorp/amazon",
-              "version": ">= 1.2.2"
-            }
-          ]
-    },
   "variables": {
     "access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
     "secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
