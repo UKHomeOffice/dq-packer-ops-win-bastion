@@ -12,7 +12,6 @@
       "secret_key": "{{user `secret_key`}}",
       "region": "eu-west-2",
       "iam_instance_profile": "packer_builder",
-      "imds_support": "v2.0",
       "metadata_options": {
         "http_endpoint": "enabled",
         "http_tokens": "required",
