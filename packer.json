@@ -49,14 +49,7 @@
       ]
     }
   ],
-  packer {
-  required_plugins {
-    amazon = {
-      version = ">= 1.2.2" # preferably "~> 1.2.0" for latest patch version
-      source = "github.com/hashicorp/amazon"
-    }
-  }
-}
+  "packer_version": ">= 1.2.2"
   "provisioners": [
     {
       "type": "ansible",
