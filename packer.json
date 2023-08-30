@@ -41,7 +41,7 @@
       "metadata_options": {
         "http_endpoint": "enabled",
         "http_tokens": "required",
-        "packer_version": ">= 1.2.2",
+        "packer_version": "1.2.2",
         "http_put_response_hop_limit": 1
       },
       "ami_users": [
