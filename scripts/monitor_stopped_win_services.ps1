@@ -2,7 +2,8 @@ Import-Module AWSPowerShell
 
 $Namespace = 'Windows-Stopped-Service-Monitor'
 
-$instanceId = (New-Object System.Net.WebClient).DownloadString("http://169.254.169.254/latest/meta-data/instance-id")
+[string]$token = Invoke-RestMethod -Headers @{"X-aws-ec2-metadata-token-ttl-seconds" = "21600"} -Method PUT -Uri http://169.254.169.254/latest/api/token
+[string]$instanceId = Invoke-RestMethod -Headers @{"X-aws-ec2-metadata-token" = $token} -Method GET -Uri http://169.254.169.254/latest/meta-data/instance_id"
 
 
 $instanceDimension = New-Object -TypeName Amazon.CloudWatch.Model.Dimension;
