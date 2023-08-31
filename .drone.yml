@@ -45,6 +45,7 @@ steps:
   commands:
   - export HOME=/home/packer
   - packer --version
+  - packer init packer.json.pkr.hcl
   - packer validate packer.json.pkr.hcl
 
 - name: inspect
