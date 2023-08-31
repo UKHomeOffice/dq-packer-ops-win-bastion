@@ -45,8 +45,7 @@ steps:
   commands:
   - export HOME=/home/packer
   - packer --version
-  - packer init packer.json.pkr.hcl
-  - packer validate packer.json.pkr.hcl
+  - packer validate
 
 - name: inspect
   pull: if-not-exists
@@ -82,8 +81,7 @@ steps:
     - export HOME=/home/packer
     - export DRONE_BUILD_NUMBER=$${DRONE_BUILD_NUMBER}
     - packer --version
-    - packer build packer.json.pkr.hcl
-  when:
+    - packer build packer.json
     event:
     - push
   depends_on:
