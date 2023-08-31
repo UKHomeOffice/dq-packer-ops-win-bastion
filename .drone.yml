@@ -81,7 +81,7 @@ steps:
     - export HOME=/home/packer
     - export DRONE_BUILD_NUMBER=$${DRONE_BUILD_NUMBER}
     - packer --version
-    - packer build packer.json
+    - packer build packer.json.pkr.hcl
   when:
     event:
     - push
