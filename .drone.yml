@@ -45,7 +45,7 @@ steps:
   commands:
   - export HOME=/home/packer
   - packer --version
-  - packer validate packer.json
+  - packer validate packer.json.pkr.hcl
 
 - name: inspect
   pull: if-not-exists
@@ -53,7 +53,7 @@ steps:
   commands:
   - export HOME=/home/packer
   - packer --version
-  - packer inspect packer.json
+  - packer inspect packer.json.pkr.hcl
   depends_on:
     - validate
 
