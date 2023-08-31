@@ -12,6 +12,7 @@
       "secret_key": "{{user `secret_key`}}",
       "region": "eu-west-2",
       "iam_instance_profile": "packer_builder",
+      "imds_support": "v2.0",
       "metadata_options": {
         "http_endpoint": "enabled",
         "http_tokens": "required",
@@ -80,20 +81,6 @@
       "Set-Location $env:programfiles/amazon/ec2launch",
       "./ec2launch.exe reset --clean --block",
       "./ec2launch.exe sysprep --clean --block"
-      ]
-    }
-  ],
-  "packer": [
-    {
-      "required_plugins": [
-        {
-          "amazon": [
-            {
-              "source": "github.com/hashicorp/amazon",
-              "version": ">= 1.2.2"
-            }
-          ]
-        }
       ]
     }
   ]
