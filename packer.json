@@ -31,7 +31,7 @@
         }
       ],
       "communicator": "winrm",
-      "winrm_username": "dqsupport",
+      "winrm_username": "Administrator",
       "winrm_use_ssl": true,
       "winrm_insecure": true,
       "winrm_port": 5986,
@@ -54,7 +54,7 @@
         "ANSIBLE_NOCOLOR=True",
         "ANSIBLE_TIMEOUT=30"
       ],
-      "user": "dqsupport",
+      "user": "Administrator",
       "use_proxy": false,
       "extra_arguments": [
         "-e",
@@ -66,7 +66,8 @@
     {
       "type": "powershell",
       "scripts": [
-          "./scripts/disable-esc-and-uac.ps1"
+          "./scripts/disable-esc-and-uac.ps1",
+          "./scripts/disable-local-adminstrator.ps1"
       ]
     },
     {
