@@ -8,7 +8,19 @@
       win_shell: |
         Set-NetFirewallProfile -Profile Domain -Enabled False
         Set-NetFirewallRule -Group "@FirewallAPI.dll,-28502" -Direction Inbound -Profile Domain -Enabled True
+        
+    - name: disable local administrator
+      win_shell: |
+        Get-LocalUser | ? { $_.SID -like 'S-1-5-21-*-500'} | ? { $_.Enabled -eq $True } | Disable-LocalUser        
 
+    - name: Ensure user dqsupport is present and added to Administrators group
+      win_user:
+        name: dqsupport
+        password: B0bP4ssw0rd
+        state: present
+        groups:
+           - Administrators
+           
     - name: Install AD UAC, GPM
       win_shell: |
         Install-PackageProvider -Name NuGet -RequiredVersion 2.8.5.201 -Force
@@ -249,11 +261,6 @@
         $task = Register-ScheduledTask -TaskName $name -Trigger $trigger -Action $action -Description $description -Principal $principal
         $task | Set-ScheduledTask
         
-    - name: Replace local admin with new account
-      win_shell: |
-        Get-LocalUser | ? { $_.SID -like 'S-1-5-21-*-500'} | ? { $_.Enabled -eq $True } | Disable-LocalUser
-        New-LocalUser -AccountNeverExpires:$true -Password ( ConvertTo-SecureString -AsPlainText -Force 'UtJkZVifU1zXyJEAYZAW') -Name ' dqsupport' | Add-LocalGroupMember -Group administrators
-                    
     - name: Add entries into Windows hosts file
       # Using multiple win_lineinfile sections because blockinfile is unavailable on Windows
       win_lineinfile:
