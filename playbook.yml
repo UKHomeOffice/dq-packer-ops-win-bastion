@@ -9,18 +9,6 @@
         Set-NetFirewallProfile -Profile Domain -Enabled False
         Set-NetFirewallRule -Group "@FirewallAPI.dll,-28502" -Direction Inbound -Profile Domain -Enabled True
         
-    - name: disable local administrator
-      win_shell: |
-        Get-LocalUser | ? { $_.SID -like 'S-1-5-21-*-500'} | ? { $_.Enabled -eq $True } | Disable-LocalUser        
-
-    - name: Ensure user dqsupport is present and added to Administrators group
-      win_user:
-        name: dqsupport
-        password: B0bP4ssw0rd
-        state: present
-        groups:
-           - Administrators
-           
     - name: Install AD UAC, GPM
       win_shell: |
         Install-PackageProvider -Name NuGet -RequiredVersion 2.8.5.201 -Force
