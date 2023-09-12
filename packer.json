@@ -74,9 +74,14 @@
       "inline": [
       "Set-Location $env:programfiles/amazon/ec2launch",
       "./ec2launch.exe reset --clean --block",
-      "./ec2launch.exe sysprep --clean --block",
-      "Get-LocalUser | Where-Object {$_.Name -eq "Administrator"} | Disable-LocalUser"  
+      "./ec2launch.exe sysprep --clean --block"      
       ]
-    }
+    },
+    {
+      "type": "powershell",
+      "scripts": [
+          "./scripts/disable-local-adminstrator.ps1"
+      ]
+    },
   ]
 }
