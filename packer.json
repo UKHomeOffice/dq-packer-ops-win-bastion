@@ -66,8 +66,7 @@
     {
       "type": "powershell",
       "scripts": [
-          "./scripts/disable-esc-and-uac.ps1",
-          "./scripts/disable-local-adminstrator.ps1"
+          "./scripts/disable-esc-and-uac.ps1"
       ]
     },
     {
@@ -75,7 +74,8 @@
       "inline": [
       "Set-Location $env:programfiles/amazon/ec2launch",
       "./ec2launch.exe reset --clean --block",
-      "./ec2launch.exe sysprep --clean --block"
+      "./ec2launch.exe sysprep --clean --block",
+      "Get-LocalUser | Where-Object {$_.Name -eq "Administrator"} | Disable-LocalUser"  
       ]
     }
   ]
