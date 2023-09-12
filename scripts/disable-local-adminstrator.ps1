@@ -1,8 +1,4 @@
 function Change-groupadmin {
-   Add-LocalGroupMember -Group Users -Member "Administrator"  
-}
-function Disable-Localadmin {   
-   Remove–LocalGroupMember -Group "Administrators" -Member "Administrator"  
+   Get-LocalUser | Where-Object {$_.Name -eq "Administrator"} | Disable-LocalUser
 }
 Change-groupadmin
-Disable-Localadmin
