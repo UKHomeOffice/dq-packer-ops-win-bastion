@@ -76,12 +76,5 @@
       "./ec2launch.exe reset --clean --block",
       "./ec2launch.exe sysprep --clean --block"      
       ]
-    },
-    {
-      "type": "powershell",
-      "scripts": [
-          "./scripts/disable-local-adminstrator.ps1"
-      ]
     }
-  ]
 }
