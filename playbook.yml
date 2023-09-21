@@ -74,7 +74,7 @@
 
     - name: Deny write and execute access to Users in paths
       win_acl:
-        path: {{ item }}
+        path: "{{ item }}"
         user: DOMAIN\User
         rights: Write,Modify,FullControl,Delete,ExecuteFile,ChangePermissions
         type: deny
