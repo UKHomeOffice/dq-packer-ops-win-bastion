@@ -79,7 +79,7 @@
         rights: Write,Modify,FullControl,Delete,ExecuteFile,ChangePermissions
         type: deny
         state: present
-        with_items:
+      with_items:
         - C:\Python39
         - C:\Python27
         - C:\PSTools
