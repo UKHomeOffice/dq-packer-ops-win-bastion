@@ -72,6 +72,18 @@
         - 'C:\Python27'
         - 'C:\PSTools'
 
+    - name: Deny write and execute access to Users in paths
+      win_acl:
+        path: {{ item }}
+        user: DOMAIN\User
+        rights: Write,Modify,FullControl,Delete,ExecuteFile,ChangePermissions
+        type: deny
+        state: present
+        with_items:
+        - C:\Python39
+        - C:\Python27
+        - C:\PSTools
+
     - name: Download AWSCLI
       win_shell: |
         $url = "https://s3.amazonaws.com/aws-cli/AWSCLI64.msi"
