@@ -23,7 +23,6 @@
     - name: Create Directories
       win_shell: |
         mkdir C:\tmp\install
-        mkdir C:\PSTools
         mkdir C:\scripts
 
     - name: Install Chocolatey
@@ -46,9 +45,9 @@
 
     - name: Chocolatey install various tools (python related)
       win_shell: |
-        choco install python2
-        choco install python --version=3.9.0
-        C:\Python39\python.exe -m pip install --upgrade pip
+        choco install python2 --params '"/InstallDir:C:\Program Files\Python27"'
+        choco install python --version=3.9.0 --params '"/InstallDir:C:\Program Files\Python39"'
+        C:\Program Files\Python39\python.exe -m pip install --upgrade pip
         py -m pip install boto3
 
     - name: Download PsTools
@@ -62,27 +61,15 @@
     - name: Unzip PsTools
       win_unzip:
         src: C:\tmp\install\PSTools.zip
-        dest: C:\PSTools\
+        dest: C:\Program Files\PSTools\
         delete_archive: yes
 
     - name: Ensure that Python2.7 / Python3.9 and PsTools are present on the global system path
       win_path:
         elements:
-        - 'C:\Python39'
-        - 'C:\Python27'
-        - 'C:\PSTools'
-
-    - name: Deny write and execute access to Users in paths
-      win_acl:
-        path: "{{ item }}"
-        user: DOMAIN\User
-        rights: Write,Modify,FullControl,Delete,ExecuteFile,ChangePermissions
-        type: deny
-        state: present
-      with_items:
-        - C:\Python39
-        - C:\Python27
-        - C:\PSTools
+          - 'C:\Program Files\Python27'
+          - 'C:\Program Files\Python39'
+          - 'C:\Program Files\PSTools'
 
     - name: Download AWSCLI
       win_shell: |
@@ -232,7 +219,7 @@
     - name: Setup SQLWorkbench scheduled task
       win_shell: |
         $name = "SQLWorkbench_Config_Puller"
-        $action = New-ScheduledTaskAction -Execute "C:\Python39\python.exe" -Argument "C:\scripts\pull-workbench-conf.py"
+        $action = New-ScheduledTaskAction -Execute "C:\Program Files\Python39\python.exe" -Argument "C:\scripts\pull-workbench-conf.py"
         $trigger = New-ScheduledTaskTrigger -Daily -At (Get-Date)
         $description = "Run SQLWorkbench config puller task every 30min"
         $principal = New-ScheduledTaskPrincipal -UserID "NT AUTHORITY\SYSTEM" -LogonType ServiceAccount -RunLevel Highest
