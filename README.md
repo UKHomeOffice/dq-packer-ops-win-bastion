@@ -9,6 +9,7 @@ Packer uses Ansible to configure (provision) the target machine.
 Ansible connects without proxy (the approach currently recommended by Hashicorp).
 Ansible connects to Windows Remote Manager (WinRM) on the target machine.
 Packer uses Powershell to further configure and Sysprep the target machine (to allow it to be reused to spin up other machines).
+Modified to create new administrator with name of dqsupport and disable administrator user as normal user
 
 ### `playbook.yml`
 Ansible playbook installing the following:
