@@ -364,6 +364,17 @@ else
     Write-Host 'Region and Locale already set'
 }
 
+# Enable SMBv2 client
+Write-Host 'Enabling SMBv2 client'
+Set-SmbClientConfiguration -RequireSecuritySignature $true
+
+# Enable Firewall
+Write-Host 'Enabling Firewall'
+Set-NetFirewallProfile -All -Enabled True
+
+# Enable Firewall logging
+Write-Host 'Enabling Firewall logging to C:\system32\LogFiles\Firewall\'
+Set-NetFireWallProfile -Domain -LogBlocked True -LogMaxSize 20000 -LogFileName ‘%systemroot%\system32\LogFiles\Firewall\pfirewall.log’
 
 # Final Restart
 # Despite the various restarts in this userdata script,
