@@ -4,11 +4,6 @@
   hosts: all
   gather_facts: false
   tasks:
-    - name: Firewall Profile and Rules
-      win_shell: |
-        Set-NetFirewallProfile -Profile Domain -Enabled False
-        Set-NetFirewallRule -Group "@FirewallAPI.dll,-28502" -Direction Inbound -Profile Domain -Enabled True
-
     - name: Install AD UAC, GPM
       win_shell: |
         Install-PackageProvider -Name NuGet -RequiredVersion 2.8.5.201 -Force
@@ -145,12 +140,12 @@
 
     - name: Download Athena JDBC Driver - with AWS SDK for Tableau Desktop
       win_get_url:
-        url: https://s3.amazonaws.com/athena-downloads/drivers/JDBC/SimbaAthenaJDBC-2.0.36.1000/AthenaJDBC42-2.0.36.1000.jar
+        url: https://s3.amazonaws.com/athena-downloads/drivers/JDBC/SimbaAthenaJDBC-2.1.1.1000/AthenaJDBC42-2.1.1.1000.jar
         dest: C:\Users\Public\Desktop\SQLWorkbench\AthenaJDBC42.jar
 
     - name: Download PostgreSQL JDBC Driver
       win_get_url:
-        url: https://jdbc.postgresql.org/download/postgresql-42.2.27.jar
+        url: https://jdbc.postgresql.org/download/postgresql-42.6.0.jar
         dest: C:\Users\Public\Desktop\SQLWorkbench\postgresql-42.jar
 
     - name: Download SQL Management studio
