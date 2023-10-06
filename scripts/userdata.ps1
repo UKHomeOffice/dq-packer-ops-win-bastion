@@ -125,9 +125,13 @@ elseif ($host_part -eq "0.15")
 {
     $new_hostname = "WIN-BASTION-4"
 }
+elseif ($host_part -eq "0.16")
+{
+    $new_hostname = "WIN-BASTION-5"
+}
 else
 {
-    $new_hostname = "WIN-BASTION-$octets[3]"
+    $new_hostname = "WIN-BASTION-" + $octets[3]
 }
 Write-Host ">>>>>>>>>>> Host should be named $new_hostname <<<<<<<<<<<<<"
 
@@ -364,17 +368,91 @@ else
     Write-Host 'Region and Locale already set'
 }
 
-# Enable SMBv2 client
-Write-Host 'Enabling SMBv2 client'
-Set-SmbClientConfiguration -RequireSecuritySignature $true
+# Enable SMBv2 client - then set the flag file to skip this for subsequent runs
+Write-Host 'Enable SMBv2 client'
+$smb_flag_file = "\PerfLogs\smb.txt"
+$smb_flag = (Test-Path $smb_flag_file)
+if (-not $smb_flag)
+{
+    Write-Host "Get SMB config"
+    $smb_config = Get-SmbClientConfiguration
+    if ($smb_config.RequireSecuritySignature -eq $true)
+    {
+        Write-Host "SMBv2 client is enabled"
+        New-Item -Path $smb_flag_file -ItemType "file" -Value "SMBv2 client enabled. Remove this file to re-enable." | Out-Null
+    }
+    else
+    {
+        Write-Host 'Enabling SMBv2 client'
+        Set-SmbClientConfiguration -Force -RequireSecuritySignature $true
+    }
+}
+else
+{
+    Write-Host 'SMBv2 client already enabled'
+}
 
 # Enable Firewall
-Write-Host 'Enabling Firewall'
-Set-NetFirewallProfile -All -Enabled True
+Write-Host 'Enable Firewall'
+$frw_flag_file = "\PerfLogs\frw.txt"
+$frw_flag = (Test-Path $frw_flag_file)
+if (-not $frw_flag)
+{
+    Write-Host "Get Firewall config"
+    $frw_config = Get-NetFirewallProfile
+    if ($frw_config.Length -ne 3) {
+        Write-Host "WARNING: Expected 3 profiles, but got" $frw_config.Length
+    }
+    $frw_all_enabled = $true #check if all firewalls have already been enabled 
+    for ($i = 0; $i -lt $frw_config.Length; $i++) {
+        if ($frw_config[$i].Enabled -eq $true) {
+            Write-Host $frw_config[$i].Name "Firewall is enabled"
+        }
+        else {
+            $frw_all_enabled = $false
+            Write-Host "Enabling Firewall for" $frw_config[$i].Name
+            Set-NetFirewallProfile -Profile $frw_config[$i].Name -Enabled True
+        }
+    }
+    if ($frw_all_enabled -eq $true) {
+        New-Item -Path $frw_flag_file -ItemType "file" -Value "Firewall enabled. Remove this file to re-enable." | Out-Null
+    }
+}
+else
+{
+    Write-Host 'Firewall already enabled for All'
+}
 
 # Enable Firewall logging
-Write-Host 'Enabling Firewall logging to C:\system32\LogFiles\Firewall\'
-Set-NetFireWallProfile -Domain -LogBlocked True -LogMaxSize 20000 -LogFileName ‘%systemroot%\system32\LogFiles\Firewall\pfirewall.log’
+Write-Host 'Enable Firewall logging'
+$fwl_flag_file = "\PerfLogs\fwl.txt"
+$fwl_flag = (Test-Path $fwl_flag_file)
+if (-not $fwl_flag)
+{
+    Write-Host "Get Firewall config for logging"
+    $fwl_config = Get-NetFirewallProfile
+    if ($fwl_config.Length -ne 3) {
+        Write-Host "WARNING: Expected 3 profiles, but got" $fwl_config.Length
+    }
+        $fwl_all_enabled = $true #check if all firewalls logs have already been enabled 
+    for ($i = 0; $i -lt $fwl_config.Length; $i++) {
+        if ($fwl_config[$i].Enabled -eq $true -and $fwl_config[$i].LogFileName -eq "%systemroot%\system32\LogFiles\Firewall\firewall.log" -and $fwl_config[$i].LogMaxSizeKilobytes -eq '2000' -and $fwl_config[$i].LogBlocked -eq $true) {
+            Write-Host $fwl_config[$i].Name "Firewall logging is enabled"
+        }
+        else {
+            $fwl_all_enabled = $false
+            Write-Host "Enabling Firewall logging for" $fwl_config[$i].Name
+            Set-NetFireWallProfile -Profile $fwl_config[$i].Name -LogBlocked True -LogMaxSizeKilobytes 20000 -LogFileName %systemroot%\system32\LogFiles\Firewall\firewall.log
+        }
+    }
+    if ($fwl_all_enabled -eq $true) {
+        New-Item -Path $fwl_flag_file -ItemType "file" -Value "Firewall logging enabled. Remove this file to re-enable." | Out-Null
+    }
+}
+else
+{
+    Write-Host 'Firewall logging already enabled for Domain,Private,Public'
+}
 
 # Final Restart
 # Despite the various restarts in this userdata script,
@@ -396,4 +474,37 @@ else
     Write-Host "Final restart already triggered once - not restarting again."
 }
 
+# Enable file extentions
+Write-Host 'Enable file extentions'
+$ext_flag_file = "\PerfLogs\ext.txt"
+$ext_flag = (Test-Path $ext_flag_file)
+if (-not $ext_flag)
+{
+    $registryPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+    if (Test-Path $registryPath) {
+        Write-Host "Path does exist"
+        Push-Location
+        Set-Location $registryPath
+        Write-Host "Get Item Property config"
+        $ext_config = Get-ItemProperty .
+        if ($ext_config.HideFileExt -eq 0) {
+            Pop-Location
+            Write-Host "File extentions is enabled"
+            New-Item -Path $ext_flag_file -ItemType "file" -Value "File extentions enabled. Remove this file to re-enable." | Out-Null
+        }
+        else {
+            Write-Host 'Enabling file extentions'
+            Set-ItemProperty . HideFileExt "0"
+            Pop-Location
+            Stop-Process -processName: Explorer -force # This will restart the Explorer service to make this work.
+        }
+    }
+    else {
+        Write-Host "Path does not exist"
+    }
+}
+else
+{
+    Write-Host 'File extentions already enabled'
+}
 Stop-Transcript
