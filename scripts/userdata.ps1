@@ -507,4 +507,32 @@ else
 {
     Write-Host 'File extentions already enabled'
 }
+
+# Copy symantec client to windows machine from S3
+Write-Host 'Copying symantec client'
+$sym_flag_file = "\PerfLogs\sym.txt"
+$sym_flag = (Test-Path $sym_flag_file)
+if (-not $sym_flag)
+# Try to figure out the Environment from the IP address
+    Write-Host "Deciphering the Environment from subnet part of the IP Address $subnet_part"
+    if($subnet_part -eq "10.8"){
+        Write-Host "Notprod symantec client had been copied"
+        aws s3 cp s3://s3-dq-ops-config-notprod/symantec-client/DQ_Win_Servers_WIN64BIT/Symantec_Endpoint_Protection_version_14.3.10148.8000/setup.exe C:\tmp\setup.exe
+        Start-Process "C:\tmp\setup.exe" "powershell" -Verb RunAs
+        Restart-Computer -Force
+    }
+    elseif($subnet_part -eq "10.2"){
+        Write-Host "Prod symantec client had been copied"
+        aws s3 cp s3://s3-dq-ops-config-prod/symantec-client/DQ_Win_Servers_WIN64BIT/Symantec_Endpoint_Protection_version_14.3.10148.8000/setup.exe C:\tmp\setup.exe
+        Start-Process "C:\tmp\setup.exe" "powershell" -Verb RunAs
+        Restart-Computer -Force
+    }
+    else{
+        Write-Host "UNKNOWN"
+    }
+else
+{
+    Write-Host 'Symantec client already present'
+}
+
 Stop-Transcript
