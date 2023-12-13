@@ -520,16 +520,16 @@ if (-not $sym_flag)
         aws s3 cp s3://s3-dq-ops-config-notprod/symantec-client/DQ_Win_Servers_WIN64BIT/Symantec_Endpoint_Protection_version_14.3.10148.8000/setup.exe C:\tmp\setup.exe
         Write-Host "Installing notprod symantec client"
         Start-Process "C:\tmp\setup.exe" "powershell" -Verb RunAs -Wait
-        Write-Host "Restarting machine"
-        Restart-Computer -Force
+        # Write-Host "Restarting machine"
+        # Restart-Computer -Force
     }
     elseif($subnet_part -eq "10.2"){
         Write-Host "Copying the prod symantec client"
         aws s3 cp s3://s3-dq-ops-config-prod/symantec-client/DQ_Win_Servers_WIN64BIT/Symantec_Endpoint_Protection_version_14.3.10148.8000/setup.exe C:\tmp\setup.exe
         Write-Host "Installing prod symantec client"
         Start-Process "C:\tmp\setup.exe" "powershell" -Verb RunAs -Wait
-        Write-Host "Restarting machine"
-        Restart-Computer -Force
+        # Write-Host "Restarting machine"
+        # Restart-Computer -Force
     }
     else{
         Write-Host "UNKNOWN"
