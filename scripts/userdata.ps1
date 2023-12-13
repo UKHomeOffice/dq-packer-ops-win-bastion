@@ -460,6 +460,7 @@ Write-Host 'Copying symantec client'
 $sym_flag_file = "\PerfLogs\sym.txt"
 $sym_flag = (Test-Path $sym_flag_file)
 if (-not $sym_flag)
+{
 # Try to figure out the Environment from the IP address
     Write-Host "Deciphering the Environment from subnet part of the IP Address $subnet_part"
     if($subnet_part -eq "10.8"){
@@ -477,6 +478,7 @@ if (-not $sym_flag)
     else{
         Write-Host "UNKNOWN"
     }
+}
 else
 {
     Write-Host 'Symantec client already present'
