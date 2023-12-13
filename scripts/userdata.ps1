@@ -454,6 +454,38 @@ else
     Write-Host 'Firewall logging already enabled for Domain,Private,Public'
 }
 
+
+# Copy symantec client to windows machine from S3
+Write-Host 'Copying symantec client'
+$sym_flag_file = "\PerfLogs\sym.txt"
+$sym_flag = (Test-Path $sym_flag_file)
+if (-not $sym_flag)
+# Try to figure out the Environment from the IP address
+    Write-Host "Deciphering the Environment from subnet part of the IP Address $subnet_part"
+    if($subnet_part -eq "10.8"){
+        Write-Host "Copying the notprod symantec client"
+        aws s3 cp s3://s3-dq-ops-config-notprod/symantec-client/DQ_Win_Servers_WIN64BIT/Symantec_Endpoint_Protection_version_14.3.10148.8000/setup.exe C:\tmp\setup.exe
+        Write-Host "Installing notprod symantec client"
+        Start-Process "C:\tmp\setup.exe" "powershell" -Verb RunAs -Wait
+        # Write-Host "Restarting machine"
+        # Restart-Computer -Force
+    }
+    elseif($subnet_part -eq "10.2"){
+        Write-Host "Copying the prod symantec client"
+        aws s3 cp s3://s3-dq-ops-config-prod/symantec-client/DQ_Win_Servers_WIN64BIT/Symantec_Endpoint_Protection_version_14.3.10148.8000/setup.exe C:\tmp\setup.exe
+        Write-Host "Installing prod symantec client"
+        Start-Process "C:\tmp\setup.exe" "powershell" -Verb RunAs -Wait
+        # Write-Host "Restarting machine"
+        # Restart-Computer -Force
+    }
+    else{
+        Write-Host "UNKNOWN"
+    }
+else
+{
+    Write-Host 'Symantec client already present'
+}
+
 # Final Restart
 # Despite the various restarts in this userdata script,
 # it has been found during testing that one final restart is often required to get a newly deployed
@@ -506,37 +538,6 @@ if (-not $ext_flag)
 else
 {
     Write-Host 'File extentions already enabled'
-}
-
-# Copy symantec client to windows machine from S3
-Write-Host 'Copying symantec client'
-$sym_flag_file = "\PerfLogs\sym.txt"
-$sym_flag = (Test-Path $sym_flag_file)
-if (-not $sym_flag)
-# Try to figure out the Environment from the IP address
-    Write-Host "Deciphering the Environment from subnet part of the IP Address $subnet_part"
-    if($subnet_part -eq "10.8"){
-        Write-Host "Copying the notprod symantec client"
-        aws s3 cp s3://s3-dq-ops-config-notprod/symantec-client/DQ_Win_Servers_WIN64BIT/Symantec_Endpoint_Protection_version_14.3.10148.8000/setup.exe C:\tmp\setup.exe
-        Write-Host "Installing notprod symantec client"
-        Start-Process "C:\tmp\setup.exe" "powershell" -Verb RunAs -Wait
-        # Write-Host "Restarting machine"
-        # Restart-Computer -Force
-    }
-    elseif($subnet_part -eq "10.2"){
-        Write-Host "Copying the prod symantec client"
-        aws s3 cp s3://s3-dq-ops-config-prod/symantec-client/DQ_Win_Servers_WIN64BIT/Symantec_Endpoint_Protection_version_14.3.10148.8000/setup.exe C:\tmp\setup.exe
-        Write-Host "Installing prod symantec client"
-        Start-Process "C:\tmp\setup.exe" "powershell" -Verb RunAs -Wait
-        # Write-Host "Restarting machine"
-        # Restart-Computer -Force
-    }
-    else{
-        Write-Host "UNKNOWN"
-    }
-else
-{
-    Write-Host 'Symantec client already present'
 }
 
 Stop-Transcript
