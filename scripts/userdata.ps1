@@ -456,7 +456,7 @@ else
 
 
 # Copy symantec client to windows machine from S3
-Write-Host 'Copying symantec client'
+Write-Host 'Symantec client'
 $sym_flag_file = "\PerfLogs\sym.txt"
 $sym_flag = (Test-Path $sym_flag_file)
 if (-not $sym_flag)
@@ -464,16 +464,18 @@ if (-not $sym_flag)
 # Try to figure out the Environment from the IP address
     Write-Host "Deciphering the Environment from subnet part of the IP Address $subnet_part"
     if($subnet_part -eq "10.8"){
-        Write-Host "Copying the notprod symantec client"
+        Write-Host "Copying the notprod symantec client from aws"
         aws s3 cp s3://s3-dq-ops-config-notprod/symantec-client/DQ_Win_Servers_WIN64BIT/Symantec_Endpoint_Protection_version_14.3.10148.8000/setup.exe C:\tmp\setup.exe
         Write-Host "Installing notprod symantec client"
         Start-Process "C:\tmp\setup.exe" "powershell" -Verb RunAs -Wait
+        New-Item -Path $sym_flag_file -ItemType "file" -Value "Symantec notprod client installed. Remove this file to re-enable." | Out-Null
     }
     elseif($subnet_part -eq "10.2"){
-        Write-Host "Copying the prod symantec client"
+        Write-Host "Copying the prod symantec client from aws"
         aws s3 cp s3://s3-dq-ops-config-prod/symantec-client/DQ_Win_Servers_WIN64BIT/Symantec_Endpoint_Protection_version_14.3.10148.8000/setup.exe C:\tmp\setup.exe
         Write-Host "Installing prod symantec client"
         Start-Process "C:\tmp\setup.exe" "powershell" -Verb RunAs -Wait
+        New-Item -Path $sym_flag_file -ItemType "file" -Value "Symantec prod client installed. Remove this file to re-enable." | Out-Null
     }
     else{
         Write-Host "UNKNOWN"
