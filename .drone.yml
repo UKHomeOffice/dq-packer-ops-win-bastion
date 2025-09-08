@@ -104,58 +104,91 @@ steps:
   depends_on:
     - build
 
-- name: packer-copy-notprod
-  pull: always
-  image: *copy-image
+- name: copy-ami-notprod
+  image: amazon/aws-cli
   commands:
-  - source ./set_aws_secrets_np.sh
-  - export filters="--owner 093401982388 --filters "Name=name,Values=dq-ops-win-bastion-*""
-  - export os="win2019"
-  - export HOME=/home/packer
-  - cd /home/packer
-  - ./build.sh
+    - source ./set_aws_secrets_np.sh
+    - |
+      # Find the most recent AMI matching the filter
+      AMI_INFO=$(aws ec2 describe-images \
+        --owners 093401982388 \
+        --filters "Name=name,Values=dq-ops-win-bastion-*" \
+        --query 'Images | sort_by(@, &CreationDate)[-1].[ImageId,Name]' \
+        --output text)
+
+      AMI_ID=$(echo "$AMI_INFO" | awk '{print $1}')
+      AMI_NAME=$(echo "$AMI_INFO" | awk '{print $2}')
+
+      echo "Latest AMI ID found: $AMI_ID"
+      echo "Latest AMI Name found: $AMI_NAME"
+
+      # Construct the name for the copied AMI
+      COPY_NAME="$AMI_NAME copied from $AMI_ID"
+
+      # Copy the AMI with the constructed name
+      aws ec2 copy-image \
+        --source-image-id $AMI_ID \
+        --source-region eu-west-2 \
+        --name "$COPY_NAME" \
+        --description "Copy of CI AMI $AMI_NAME ($AMI_ID) to notprod account"
   when:
     event:
-    - push
+      - push
   depends_on:
     - retrieve_aws_secrets_np
 
-- name: retrieve_aws_secrets_prod
-  pull: if-not-exists
-  image: *vault-image
-  commands:
-    *retrieve-deployment-aws-key
-  environment:
-    VAULT_ADDR:
-      from_secret: VAULT_ADDR_PROD
-    VAULT_TOKEN:
-      from_secret: VAULT_TOKEN_PROD
-  when:
-    branch:
-    - master
-    event:
-    - push
-  depends_on:
-    - build
+# - name: packer-copy-notprod
+#   pull: always
+#   image: *copy-image
+#   commands:
+#   - source ./set_aws_secrets_np.sh
+#   - export filters="--owner 093401982388 --filters "Name=name,Values=dq-ops-win-bastion-*""
+#   - export os="win2019"
+#   - export HOME=/home/packer
+#   - cd /home/packer
+#   - ./build.sh
+#   when:
+#     event:
+#     - push
+#   depends_on:
+#     - retrieve_aws_secrets_np
 
-- name: packer-copy-prod
-  pull: if-not-exists
-  image: *copy-image
-  commands:
-  - source ./set_aws_secrets_prod.sh
-  - export filters="--owner 093401982388 --filters "Name=name,Values=dq-ops-win-bastion-*""
-  - export os="win2019"
-  - export HOME=/home/packer
-  - packer --version
-  - cd /home/packer
-  - ./build.sh
-  when:
-    branch:
-    - master
-    event:
-    - push
-  depends_on:
-    - retrieve_aws_secrets_prod
+# - name: retrieve_aws_secrets_prod
+#   pull: if-not-exists
+#   image: *vault-image
+#   commands:
+#     *retrieve-deployment-aws-key
+#   environment:
+#     VAULT_ADDR:
+#       from_secret: VAULT_ADDR_PROD
+#     VAULT_TOKEN:
+#       from_secret: VAULT_TOKEN_PROD
+#   when:
+#     branch:
+#     - master
+#     event:
+#     - push
+#   depends_on:
+#     - build
+
+# - name: packer-copy-prod
+#   pull: if-not-exists
+#   image: *copy-image
+#   commands:
+#   - source ./set_aws_secrets_prod.sh
+#   - export filters="--owner 093401982388 --filters "Name=name,Values=dq-ops-win-bastion-*""
+#   - export os="win2019"
+#   - export HOME=/home/packer
+#   - packer --version
+#   - cd /home/packer
+#   - ./build.sh
+#   when:
+#     branch:
+#     - master
+#     event:
+#     - push
+#   depends_on:
+#     - retrieve_aws_secrets_prod
 
 - name: renew-vault-tokens
   pull: if-not-exists
