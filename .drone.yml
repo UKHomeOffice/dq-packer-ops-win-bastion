@@ -73,20 +73,20 @@ steps:
   depends_on:
     - inspect
 
-# - name: build
-#   pull: if-not-exists
-#   image: *packer-image
-#   commands:
-#     - source ./set_aws_secrets_ci.sh
-#     - export HOME=/home/packer
-#     - export DRONE_BUILD_NUMBER=$${DRONE_BUILD_NUMBER}
-#     - packer --version
-#     - packer build packer.json
-#   when:
-#     event:
-#     - push
-#   depends_on:
-#     - retrieve_aws_secrets_ci
+- name: build
+  pull: if-not-exists
+  image: *packer-image
+  commands:
+    - source ./set_aws_secrets_ci.sh
+    - export HOME=/home/packer
+    - export DRONE_BUILD_NUMBER=$${DRONE_BUILD_NUMBER}
+    - packer --version
+    - packer build packer.json
+  when:
+    event:
+    - push
+  depends_on:
+    - retrieve_aws_secrets_ci
 
 - name: share-snapshot
   image: amazon/aws-cli
@@ -115,7 +115,7 @@ steps:
     event:
       - push
   depends_on:
-    - retrieve_aws_secrets_ci
+    - build
 
 - name: retrieve_aws_secrets_np
   pull: if-not-exists
@@ -131,7 +131,7 @@ steps:
     event:
       - push
   depends_on:
-    - retrieve_aws_secrets_ci
+    - share-snapshot
 
 - name: copy-ami-notprod
   image: amazon/aws-cli
@@ -158,7 +158,7 @@ steps:
         --source-image-id $AMI_ID \
         --source-region eu-west-2 \
         --name "$COPY_NAME" \
-        --description "Copy of CI AMI $AMI_NAME ($AMI_ID) to notprod account"
+        --description "Copy of CI AMI $AMI_NAME ($AMI_ID)"
 
       echo "Waiting for $AMI_ID to become available..."
 
@@ -182,58 +182,75 @@ steps:
   depends_on:
     - retrieve_aws_secrets_np
 
-# - name: packer-copy-notprod
-#   pull: always
-#   image: *copy-image
-#   commands:
-#   - source ./set_aws_secrets_np.sh
-#   - export filters="--owner 093401982388 --filters "Name=name,Values=dq-ops-win-bastion-*""
-#   - export os="win2019"
-#   - export HOME=/home/packer
-#   - cd /home/packer
-#   - ./build.sh
-#   when:
-#     event:
-#     - push
-#   depends_on:
-#     - retrieve_aws_secrets_np
 
-# - name: retrieve_aws_secrets_prod
-#   pull: if-not-exists
-#   image: *vault-image
-#   commands:
-#     *retrieve-deployment-aws-key
-#   environment:
-#     VAULT_ADDR:
-#       from_secret: VAULT_ADDR_PROD
-#     VAULT_TOKEN:
-#       from_secret: VAULT_TOKEN_PROD
-#   when:
-#     branch:
-#     - master
-#     event:
-#     - push
-#   depends_on:
-#     - build
+- name: retrieve_aws_secrets_prod
+  pull: if-not-exists
+  image: *vault-image
+  commands:
+    *retrieve-deployment-aws-key
+  environment:
+    VAULT_ADDR:
+      from_secret: VAULT_ADDR_PROD
+    VAULT_TOKEN:
+      from_secret: VAULT_TOKEN_PROD
+  when:
+    branch:
+    - master
+    event:
+    - push
+  depends_on:
+    - build
 
-# - name: packer-copy-prod
-#   pull: if-not-exists
-#   image: *copy-image
-#   commands:
-#   - source ./set_aws_secrets_prod.sh
-#   - export filters="--owner 093401982388 --filters "Name=name,Values=dq-ops-win-bastion-*""
-#   - export os="win2019"
-#   - export HOME=/home/packer
-#   - packer --version
-#   - cd /home/packer
-#   - ./build.sh
-#   when:
-#     branch:
-#     - master
-#     event:
-#     - push
-#   depends_on:
-#     - retrieve_aws_secrets_prod
+- name: copy-ami-prod
+  image: amazon/aws-cli
+  commands:
+    - source ./set_aws_secrets_prod.sh
+    - |
+      # Get the AMI ID 
+      AMI_INFO=$(aws ec2 describe-images \
+        --owners 093401982388 \
+        --filters "Name=name,Values=dq-ops-win-bastion-*" \
+        --query 'Images | sort_by(@, &CreationDate)[-1].[ImageId,Name]' \
+        --output text)
+
+      AMI_ID=$(echo "$AMI_INFO" | awk '{print $1}')
+      AMI_NAME=$(echo "$AMI_INFO" | awk '{print $2}')
+
+      echo "Latest AMI ID found: $AMI_ID"
+      echo "Latest AMI Name found: $AMI_NAME"
+
+      # Proceed with AMI copy
+      COPY_NAME="$AMI_NAME copied from [Packer Build] - $AMI_ID"
+
+      aws ec2 copy-image \
+        --source-image-id $AMI_ID \
+        --source-region eu-west-2 \
+        --name "$COPY_NAME" \
+        --description "Copy of CI AMI $AMI_NAME ($AMI_ID)
+
+      echo "Waiting for $AMI_ID to become available..."
+
+      aws ec2 wait image-available --image-ids $AMI_ID
+
+      echo "$AMI_ID is now available"
+
+      echo "Waiting for $AMI_ID snapshots to become available..."
+
+      SNAPSHOT_IDS=$(aws ec2 describe-images --image-ids $AMI_ID --query 'Images[0].BlockDeviceMappings[].Ebs.SnapshotId' --output text)
+
+      for SNAPSHOT_ID in $SNAPSHOT_IDS; do
+        echo "Waiting for snapshot $SNAPSHOT_ID to become available..."
+        aws ec2 wait snapshot-completed --snapshot-ids $SNAPSHOT_ID
+      done
+
+      echo "All snapshots for $AMI_ID are now available!"
+  when:
+    branch: 
+      - master
+    event:
+      - push
+  depends_on:
+    - retrieve_aws_secrets_prod
 
 - name: renew-vault-tokens
   pull: if-not-exists
