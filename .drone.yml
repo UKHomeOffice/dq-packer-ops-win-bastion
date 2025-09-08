@@ -109,7 +109,7 @@ steps:
   commands:
     - source ./set_aws_secrets_np.sh
     - |
-      # Find the most recent AMI matching the filter
+      # Get the AMI ID 
       AMI_INFO=$(aws ec2 describe-images \
         --owners 093401982388 \
         --filters "Name=name,Values=dq-ops-win-bastion-*" \
@@ -122,10 +122,17 @@ steps:
       echo "Latest AMI ID found: $AMI_ID"
       echo "Latest AMI Name found: $AMI_NAME"
 
-      # Construct the name for the copied AMI
-      COPY_NAME="$AMI_NAME copied from $AMI_ID"
+      # Share each snapshot with target accounts before copying
+      SNAPSHOT_IDS=$(aws ec2 describe-images --image-ids $AMI_ID --query 'Images[0].BlockDeviceMappings[].Ebs.SnapshotId' --output text)
 
-      # Copy the AMI with the constructed name
+      for SNAPSHOT_ID in $SNAPSHOT_IDS; do
+        echo "Sharing snapshot $SNAPSHOT_ID with accounts notprod and prod"
+        aws ec2 modify-snapshot-attribute --snapshot-id $SNAPSHOT_ID --attribute createVolumePermission --operation-type add --user-ids 483846886818 337779336338
+      done
+
+      # Proceed with AMI copy
+      COPY_NAME="$AMI_NAME copied from ami-$AMI_ID"
+
       aws ec2 copy-image \
         --source-image-id $AMI_ID \
         --source-region eu-west-2 \
