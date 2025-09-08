@@ -160,11 +160,22 @@ steps:
         --name "$COPY_NAME" \
         --description "Copy of CI AMI $AMI_NAME ($AMI_ID) to notprod account"
 
-      echo "Waiting for AMI $AMI_ID to become available..."
+      echo "Waiting for $AMI_ID to become available..."
 
       aws ec2 wait image-available --image-ids $AMI_ID
 
       echo "$AMI_ID is now available"
+
+      echo "Waiting for $AMI_ID snapshots to become available..."
+
+      SNAPSHOT_IDS=$(aws ec2 describe-images --image-ids $AMI_ID --query 'Images[0].BlockDeviceMappings[].Ebs.SnapshotId' --output text)
+
+      for SNAPSHOT_ID in $SNAPSHOT_IDS; do
+        echo "Waiting for snapshot $SNAPSHOT_ID to become available..."
+        aws ec2 wait snapshot-completed --snapshot-ids $SNAPSHOT_ID
+      done
+
+      echo "All snapshots for $AMI_ID are now available!"
   when:
     event:
       - push
