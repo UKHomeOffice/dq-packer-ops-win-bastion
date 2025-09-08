@@ -78,5 +78,19 @@
       "./ec2launch.exe sysprep --clean --block"
       ]
     }
+  ],
+  "post-processors": [
+    {
+      "type": "shell-local",
+      "inline": [
+        "AMI_ID={{ .BuildArtifactId }}",
+        "echo Sharing snapshots of AMI $AMI_ID",
+        "SNAPSHOT_IDS=$(aws ec2 describe-images --image-ids $AMI_ID --query 'Images[0].BlockDeviceMappings[].Ebs.SnapshotId' --output text)",
+        "for SNAPSHOT_ID in $SNAPSHOT_IDS; do",
+        "  echo Sharing snapshot $SNAPSHOT_ID to AWS accounts",
+        "  aws ec2 modify-snapshot-attribute --snapshot-id $SNAPSHOT_ID --attribute createVolumePermission --operation-type add --user-ids 483846886818 337779336338",
+        "done"
+      ]
+    }
   ]
 }
