@@ -152,7 +152,7 @@ steps:
       echo "Latest AMI Name found: $AMI_NAME"
 
       # Proceed with AMI copy
-      COPY_NAME="$AMI_NAME copied from [Packer Build] = $AMI_ID"
+      COPY_NAME="$AMI_NAME copied from [Packer Build] - $AMI_ID"
 
       aws ec2 copy-image \
         --source-image-id $AMI_ID \
