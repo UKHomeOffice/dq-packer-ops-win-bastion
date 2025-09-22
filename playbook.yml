@@ -26,7 +26,7 @@
         [System.Net.ServicePointManager]::SecurityProtocol = 3072
         iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
         choco feature enable -n allowGlobalConfirmation
-        choco install chocolatey --version 1.1.0 --force
+        choco install chocolatey --version 1.4.4 --force
 
     - name: Chocolatey install various tools (non-python)
       win_shell: |
@@ -145,7 +145,7 @@
 
     - name: Download PostgreSQL JDBC Driver
       win_get_url:
-        url: https://jdbc.postgresql.org/download/postgresql-42.7.1.jar
+        url: https://jdbc.postgresql.org/download/postgresql-42.7.8.jar
         dest: C:\Users\Public\Desktop\SQLWorkbench\postgresql-42.jar
 
     - name: Download SQL Management studio
