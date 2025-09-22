@@ -140,7 +140,7 @@
 
     - name: Download Athena JDBC Driver - with AWS SDK for Tableau Desktop
       win_get_url:
-        url: https://s3.amazonaws.com/athena-downloads/drivers/JDBC/SimbaAthenaJDBC-2.1.1.1000/AthenaJDBC42-2.1.1.1000.jar
+        url: https://s3.amazonaws.com/athena-downloads/drivers/JDBC/SimbaAthenaJDBC-2.2.2.1000/AthenaJDBC42-2.2.2.1000.jar
         dest: C:\Users\Public\Desktop\SQLWorkbench\AthenaJDBC42.jar
 
     - name: Download PostgreSQL JDBC Driver
