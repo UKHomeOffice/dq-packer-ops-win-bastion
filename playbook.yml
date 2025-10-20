@@ -30,7 +30,7 @@
 
     - name: Chocolatey install various tools (non-python)
       win_shell: |
-        choco install googlechrome
+        choco install microsoft-edge
         choco install putty
         choco install notepadplusplus
         choco install dbeaver
