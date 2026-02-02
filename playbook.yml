@@ -20,13 +20,32 @@
         mkdir C:\tmp\install
         mkdir C:\scripts
 
-    - name: Install Chocolatey
+    - name: Download Chocolatey install script
+      win_shell: |
+        [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
+        if (!(Test-Path 'C:\scripts')) { New-Item -ItemType Directory -Path 'C:\scripts' | Out-Null }
+        $scriptUrl = 'https://community.chocolatey.org/install.ps1'
+        $scriptPath = 'C:\scripts\install-choco.ps1'
+        (New-Object System.Net.WebClient).DownloadFile($scriptUrl, $scriptPath)
+      args:
+        executable: powershell.exe
+
+    - name: Install Chocolatey from local script
       win_shell: |
         Set-ExecutionPolicy Bypass -Scope Process -Force
-        [System.Net.ServicePointManager]::SecurityProtocol = 3072
-        iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+        & 'C:\scripts\install-choco.ps1'
         choco feature enable -n allowGlobalConfirmation
         choco install chocolatey --version 1.4.4 --force
+      args:
+        executable: powershell.exe
+
+    # - name: Install Chocolatey
+    #   win_shell: |
+    #     Set-ExecutionPolicy Bypass -Scope Process -Force
+    #     [System.Net.ServicePointManager]::SecurityProtocol = 3072
+    #     iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+    #     choco feature enable -n allowGlobalConfirmation
+    #     choco install chocolatey --version 1.4.4 --force
 
     - name: Chocolatey install various tools (non-python)
       win_shell: |
