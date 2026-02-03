@@ -138,7 +138,7 @@
         dest: 'C:\Users\Public\Desktop\DBeaver.lnk'
         icon: 'C:\Program Files\DBeaver\dbeaver.exe'
 
-    - name: Install pgAdmin4 via Chocolatey
+    - name: Install pgAdmin4 via Chocolatey 
       win_shell: choco install pgadmin4 --version=9.11.0 --force
       args:
         executable: powershell.exe
