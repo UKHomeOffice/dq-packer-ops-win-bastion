@@ -138,24 +138,10 @@
         dest: 'C:\Users\Public\Desktop\DBeaver.lnk'
         icon: 'C:\Program Files\DBeaver\dbeaver.exe'
 
-    - name: Download PGAdmin4 9.8
-      win_shell: |
-        Set-ExecutionPolicy Bypass -Scope Process -Force
-        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-        $url = "https://www.pgadmin.org/static/packages/pgadmin4/9.8/windows/pgadmin4-9.8-x64.exe"
-        $output = "C:\\tmp\\install\\pgadmin4-9.8-x64.exe"
-        $wc = New-Object System.Net.WebClient
-        $wc.DownloadFile($url, $output)
-
-    - name: Install PGAdmin4 9.8
-      win_shell: |
-        C:\tmp\install\pgadmin4-9.8-x64.exe /VERYSILENT /NORESTART /ALLUSERS
-
-    - name: PGAdmin4 v9 - create shortcut for all users (Public Desktop)
-      win_shortcut:
-        src: 'C:\Program Files\pgAdmin 4\v9\runtime\pgAdmin4.exe'
-        dest: 'C:\Users\Public\Desktop\pgAdmin4.lnk'
-        icon: 'C:\Program Files\pgAdmin 4\v9\runtime\pgAdmin4.exe'
+    - name: Install pgAdmin4 via Chocolatey
+      win_shell: choco install pgadmin4 --version=9.11.0 --force
+      args:
+        executable: powershell.exe
 
     - name: Download Athena JDBC Driver - with AWS SDK for Tableau Desktop
       win_get_url:
