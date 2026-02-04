@@ -182,7 +182,7 @@ steps:
   depends_on:
     - retrieve_aws_secrets_np
 
-- name: cleanup-ci-ami
+- name: cleanup-ci-ami 
   image: amazon/aws-cli
   commands:
     - source ./set_aws_secrets_ci.sh
