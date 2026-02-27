@@ -20,13 +20,32 @@
         mkdir C:\tmp\install
         mkdir C:\scripts
 
-    - name: Install Chocolatey
+    - name: Download Chocolatey install script
+      win_shell: |
+        [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
+        if (!(Test-Path 'C:\scripts')) { New-Item -ItemType Directory -Path 'C:\scripts' | Out-Null }
+        $scriptUrl = 'https://community.chocolatey.org/install.ps1'
+        $scriptPath = 'C:\scripts\install-choco.ps1'
+        (New-Object System.Net.WebClient).DownloadFile($scriptUrl, $scriptPath)
+      args:
+        executable: powershell.exe
+
+    - name: Install Chocolatey from local script
       win_shell: |
         Set-ExecutionPolicy Bypass -Scope Process -Force
-        [System.Net.ServicePointManager]::SecurityProtocol = 3072
-        iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+        & 'C:\scripts\install-choco.ps1'
         choco feature enable -n allowGlobalConfirmation
         choco install chocolatey --version 1.4.4 --force
+      args:
+        executable: powershell.exe
+
+    # - name: Install Chocolatey
+    #   win_shell: |
+    #     Set-ExecutionPolicy Bypass -Scope Process -Force
+    #     [System.Net.ServicePointManager]::SecurityProtocol = 3072
+    #     iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+    #     choco feature enable -n allowGlobalConfirmation
+    #     choco install chocolatey --version 1.4.4 --force
 
     - name: Chocolatey install various tools (non-python)
       win_shell: |
@@ -119,24 +138,10 @@
         dest: 'C:\Users\Public\Desktop\DBeaver.lnk'
         icon: 'C:\Program Files\DBeaver\dbeaver.exe'
 
-    - name: Download PGAdmin4 9.8
-      win_shell: |
-        Set-ExecutionPolicy Bypass -Scope Process -Force
-        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-        $url = "https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v9.8/windows/pgadmin4-9.8-x64.exe"
-        $output = "C:\tmp\install\pgadmin4-9.8-x64.exe"
-        $wc = New-Object System.Net.WebClient
-        $wc.DownloadFile($url, $output)
-
-    - name: Install PGAdmin4 9.8
-      win_shell: |
-        C:\tmp\install\pgadmin4-9.8-x64.exe /VERYSILENT /NORESTART /ALLUSERS
-
-    - name: PGAdmin4 v9 - create shortcut for all users (Public Desktop)
-      win_shortcut:
-        src: 'C:\Program Files\pgAdmin 4\v9\runtime\pgAdmin4.exe'
-        dest: 'C:\Users\Public\Desktop\pgAdmin4.lnk'
-        icon: 'C:\Program Files\pgAdmin 4\v9\runtime\pgAdmin4.exe'
+    - name: Install pgAdmin4 via Chocolatey 
+      win_shell: choco install pgadmin4 --version=9.11.0 --force
+      args:
+        executable: powershell.exe
 
     - name: Download Athena JDBC Driver - with AWS SDK for Tableau Desktop
       win_get_url:
