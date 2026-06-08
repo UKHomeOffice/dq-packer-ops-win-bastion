@@ -6,7 +6,7 @@
   tasks:
     - name: Install AD UAC, GPM
       win_shell: |
-        Install-PackageProvider -Name NuGet -RequiredVersion 2.8.5.201 -Force
+        Install-PackageProvider -Name NuGet -RequiredVersion 7.6.0 -Force
         Import-Module ServerManager
         Add-WindowsFeature RSAT-ADDS-Tools
         Add-WindowsFeature –Name GPMC
@@ -26,7 +26,7 @@
         [System.Net.ServicePointManager]::SecurityProtocol = 3072
         iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
         choco feature enable -n allowGlobalConfirmation
-        choco install chocolatey --version 1.4.4 --force
+        choco install chocolatey --version 1.4.6 --force
 
     - name: Chocolatey install various tools (non-python)
       win_shell: |
@@ -119,18 +119,18 @@
         dest: 'C:\Users\Public\Desktop\DBeaver.lnk'
         icon: 'C:\Program Files\DBeaver\dbeaver.exe'
 
-    - name: Download PGAdmin4 9.8
+    - name: Download PGAdmin4 9.15
       win_shell: |
         Set-ExecutionPolicy Bypass -Scope Process -Force
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-        $url = "https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v9.8/windows/pgadmin4-9.8-x64.exe"
-        $output = "C:\tmp\install\pgadmin4-9.8-x64.exe"
+        $url = "https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v9.15/windows/pgadmin4-9.15-x64.exe"
+        $output = "C:\tmp\install\pgadmin4-9.15-x64.exe"
         $wc = New-Object System.Net.WebClient
         $wc.DownloadFile($url, $output)
 
-    - name: Install PGAdmin4 9.8
+    - name: Install PGAdmin4 9.15
       win_shell: |
-        C:\tmp\install\pgadmin4-9.8-x64.exe /VERYSILENT /NORESTART /ALLUSERS
+        C:\tmp\install\pgadmin4-9.15-x64.exe /VERYSILENT /NORESTART /ALLUSERS
 
     - name: PGAdmin4 v9 - create shortcut for all users (Public Desktop)
       win_shortcut:
@@ -140,12 +140,12 @@
 
     - name: Download Athena JDBC Driver - with AWS SDK for Tableau Desktop
       win_get_url:
-        url: https://s3.amazonaws.com/athena-downloads/drivers/JDBC/SimbaAthenaJDBC-2.2.2.1000/AthenaJDBC42-2.2.2.1000.jar
+        url: https://s3.amazonaws.com/athena-downloads/drivers/JDBC/SimbaAthenaJDBC-2.2.4.1000/AthenaJDBC42-2.2.4.1000.jar
         dest: C:\Users\Public\Desktop\SQLWorkbench\AthenaJDBC42.jar
 
     - name: Download PostgreSQL JDBC Driver
       win_get_url:
-        url: https://jdbc.postgresql.org/download/postgresql-42.7.8.jar
+        url: https://jdbc.postgresql.org/download/postgresql-42.7.11.jar
         dest: C:\Users\Public\Desktop\SQLWorkbench\postgresql-42.jar
 
     - name: Download SQL Management studio
