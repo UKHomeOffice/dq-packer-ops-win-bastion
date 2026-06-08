@@ -20,11 +20,15 @@
         mkdir C:\tmp\install
         mkdir C:\scripts
 
-    - name: install chocolatey
+    - name: Install chocolatey
       win_chocolatey:
         name: chocolatey
         state: present
-
+    
+    - name: Enable Chocolatey global confirmation
+      win_chocolatey_feature:
+        name: allowGlobalConfirmation
+        state: enabled
 
     - name: Chocolatey install various tools (non-python)
       win_shell: |
