@@ -20,13 +20,11 @@
         mkdir C:\tmp\install
         mkdir C:\scripts
 
-    - name: Install Chocolatey
-      win_shell: |
-        Set-ExecutionPolicy Bypass -Scope Process -Force
-        [System.Net.ServicePointManager]::SecurityProtocol = 3072
-        iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-        choco feature enable -n allowGlobalConfirmation
-        choco install chocolatey --version 1.4.6 --force
+    - name: install chocolatey
+      win_chocolatey:
+        name: chocolatey
+        state: present
+
 
     - name: Chocolatey install various tools (non-python)
       win_shell: |
