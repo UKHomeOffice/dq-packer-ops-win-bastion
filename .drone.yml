@@ -25,8 +25,8 @@ x-anchors:
     - export ACCESS_KEY=$(cat $${AWS_CREDS} | grep access_key | awk -F ' ' '{print $2}')
     - export SECRET_KEY=$(cat $${AWS_CREDS} | grep secret_key | awk -F ' ' '{print $2}')
     - export REGION=eu-west-2
-    # Update the token TTL to 10mins
-    - vault lease renew -increment=3600 $${LEASE_ID}
+    # Update the token TTL to 3hrs
+    - vault lease renew -increment=10800 $${LEASE_ID}
     # Get the AWS credentials - for `packer-image`
     - echo "export AWS_ACCESS_KEY_ID=$${ACCESS_KEY}" > $${SET_AWS_SECRETS}
     - echo "export AWS_SECRET_ACCESS_KEY=$${SECRET_KEY}" >> $${SET_AWS_SECRETS}
