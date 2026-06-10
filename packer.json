@@ -27,7 +27,7 @@
         {
           "device_name": "/dev/sda1",
           "volume_size": 200,
-          "volume_type": "gp2",
+          "volume_type": "gp3",
           "delete_on_termination": true
         }
       ],
@@ -38,6 +38,10 @@
       "winrm_port": 5986,
       "user_data_file": "./scripts/setupwrm.ps1",
       "instance_type": "t3.xlarge",
+      "aws_polling": {
+        "delay_seconds": 30,
+        "max_attempts": 360
+      },
       "ami_name": "dq-ops-win-bastion-{{user `drone_build_number`}}",
       "ami_users": [
         "483846886818",
